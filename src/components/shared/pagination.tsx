@@ -18,6 +18,8 @@ const LIMIT_OPTIONS = [10, 20, 50];
 
 interface PaginationProps {
   meta: ApiMeta;
+  /** Page sizes in the "Rows per page" select. Defaults to 10, 20 and 50. */
+  limitOptions?: number[];
   className?: string;
 }
 
@@ -34,7 +36,7 @@ function getPageItems(current: number, total: number): (number | "ellipsis")[] {
   return items;
 }
 
-export function Pagination({ meta, className }: PaginationProps) {
+export function Pagination({ meta, limitOptions: baseOptions = LIMIT_OPTIONS, className }: PaginationProps) {
   const limitLabelId = useId();
   const { setParams } = useUrlState();
   const { page, limit, total, totalPages } = meta;
@@ -43,9 +45,9 @@ export function Pagination({ meta, className }: PaginationProps) {
 
   const from = (page - 1) * limit + 1;
   const to = Math.min(page * limit, total);
-  const limitOptions = LIMIT_OPTIONS.includes(limit)
-    ? LIMIT_OPTIONS
-    : [...LIMIT_OPTIONS, limit].sort((a, b) => a - b);
+  const limitOptions = baseOptions.includes(limit)
+    ? baseOptions
+    : [...baseOptions, limit].sort((a, b) => a - b);
 
   return (
     <div
