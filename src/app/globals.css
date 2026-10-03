@@ -41,6 +41,7 @@
   --color-brand-secondary: var(--brand-secondary);
   --color-brand-secondary-foreground: var(--brand-secondary-foreground);
   --color-brand-accent: var(--brand-accent);
+  --color-overlay: var(--overlay);
   --color-error-text: var(--error-text);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
@@ -84,6 +85,7 @@
   --destructive: #b91c1c;
   --destructive-foreground: #ffffff;
   --error-text: #b91c1c;
+  --overlay: #0f172a80;
   --border: #e2e8f0;
   --input: #7c8ba1;
   --ring: #0f766e;
@@ -134,6 +136,7 @@
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
   --error-text: #f87171;
+  --overlay: #020617b3;
   --border: #1e293b;
   --input: #64748b;
   --ring: #2dd4bf;

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Bell, Building2, LogOut, Menu } from "lucide-react";
+import { Bell, Building2, LogOut, Menu, User } from "lucide-react";
 
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { UserMenu } from "@/components/shared/user-menu";
@@ -12,7 +12,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/hooks/useSession";
 import { APP_NAME } from "@/lib/constants";
-import { getRoleHome } from "@/lib/permissions";
+import { getProfileHref, getRoleHome } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
 interface NavLink {
@@ -134,6 +134,12 @@ export function SiteNavbar() {
               <div className="mt-auto flex flex-col gap-2 border-t border-border p-4">
                 {isAuthenticated && user ? (
                   <>
+                    <Button asChild variant="outline" onClick={() => setMenuOpen(false)}>
+                      <Link href={getProfileHref(user.role)}>
+                        <User aria-hidden />
+                        Profile
+                      </Link>
+                    </Button>
                     <Button asChild variant="outline" onClick={() => setMenuOpen(false)}>
                       <Link href="/notifications">
                         <Bell aria-hidden />
