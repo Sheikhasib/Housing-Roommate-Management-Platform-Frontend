@@ -8,7 +8,7 @@ import { serverApi } from "@/lib/api/serverApi";
 import type { AuthTokens } from "@/lib/auth/constants";
 import { clearSessionCookies, getRefreshToken, setSessionCookies } from "@/lib/auth/cookies";
 import { getSafeRedirect, verifyAccessToken } from "@/lib/auth/jwt";
-import { getRoleHome } from "@/lib/permissions";
+import { canAccessPath, getRoleHome } from "@/lib/permissions";
 import type { ApiSuccess } from "@/types/api";
 import {
   forgotPasswordZodSchema,
@@ -57,7 +57,8 @@ async function startSession(tokens: AuthTokens, redirectTo?: string | null): Pro
     return { ok: false, message: "Could not start your session. Try again" };
   }
   await setSessionCookies(tokens);
-  redirect(getSafeRedirect(redirectTo) ?? getRoleHome(session.role));
+  const target = getSafeRedirect(redirectTo);
+  redirect(target && canAccessPath(session.role, target) ? target : getRoleHome(session.role));
 }
 
 async function loginWithCredentials(
@@ -99,7 +100,7 @@ export async function loginAction(input: {
 }
 
 /** The password never leaves the server: it is read from DEMO_<ROLE>_PASSWORD here. */
-export async function demoLoginAction(role: Role): Promise<ActionResult> {
+export async function demoLoginAction(role: Role, redirectTo?: string | null): Promise<ActionResult> {
   if (!(ROLES as readonly string[]).includes(role)) {
     return { ok: false, message: "Demo login is not available for this account" };
   }
@@ -109,7 +110,7 @@ export async function demoLoginAction(role: Role): Promise<ActionResult> {
   if (!email || !password) {
     return { ok: false, message: "Demo login is not available for this account" };
   }
-  return loginWithCredentials(email, password);
+  return loginWithCredentials(email, password, redirectTo);
 }
 
 function invalid(error: Parameters<typeof zodFieldErrors>[0]): ActionResult {

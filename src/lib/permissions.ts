@@ -1,3 +1,4 @@
+import { matchesPrefix, PROTECTED_PREFIXES } from "@/lib/auth/constants";
 import type { Role } from "@/validation/enums";
 
 /**
@@ -69,6 +70,27 @@ export const ROLE_LABELS: Record<Role, string> = {
 
 export function getRoleHome(role: Role): string {
   return AREA_HOME[ROLE_AREA[role]];
+}
+
+export type Zone = Area | "account";
+
+const ZONE_BY_PREFIX: Record<(typeof PROTECTED_PREFIXES)[number], Zone> = {
+  "/admin": "admin",
+  "/owner": "owner",
+  "/dashboard": "tenant",
+  "/notifications": "account",
+};
+
+/** The protected zone a pathname belongs to, or null for a public path. */
+export function findZone(pathname: string): Zone | null {
+  const prefix = PROTECTED_PREFIXES.find((candidate) => matchesPrefix(pathname, candidate));
+  return prefix ? ZONE_BY_PREFIX[prefix] : null;
+}
+
+/** Whether a logged-in role may open a path (query string and hash are ignored). */
+export function canAccessPath(role: Role, path: string): boolean {
+  const zone = findZone(path.split(/[?#]/)[0]);
+  return zone === null || zone === "account" || ROLE_AREA[role] === zone;
 }
 
 export function getProfileHref(role: Role): string {

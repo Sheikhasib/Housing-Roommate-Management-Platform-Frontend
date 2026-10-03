@@ -6,27 +6,12 @@ import {
   ACCESS_COOKIE_OPTIONS,
   AUTH_PAGES,
   matchesPrefix,
-  PROTECTED_PREFIXES,
   REFRESH_COOKIE,
   REFRESH_COOKIE_OPTIONS,
   type AuthTokens,
 } from "@/lib/auth/constants";
 import { verifyAccessToken, type SessionPayload } from "@/lib/auth/jwt";
-import { AREA_HOME, getRoleHome, ROLE_AREA, type Area } from "@/lib/permissions";
-
-type Zone = Area | "account";
-
-const ZONE_BY_PREFIX: Record<(typeof PROTECTED_PREFIXES)[number], Zone> = {
-  "/admin": "admin",
-  "/owner": "owner",
-  "/dashboard": "tenant",
-  "/notifications": "account",
-};
-
-function findZone(pathname: string): Zone | null {
-  const prefix = PROTECTED_PREFIXES.find((candidate) => matchesPrefix(pathname, candidate));
-  return prefix ? ZONE_BY_PREFIX[prefix] : null;
-}
+import { AREA_HOME, findZone, getRoleHome, ROLE_AREA } from "@/lib/permissions";
 
 type CookieChange = { type: "set"; tokens: AuthTokens } | { type: "clear" } | null;
 

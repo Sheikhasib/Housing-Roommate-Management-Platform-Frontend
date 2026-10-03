@@ -1,5 +1,6 @@
 import { jwtVerify } from "jose";
 
+import { AUTH_PAGES, matchesPrefix } from "@/lib/auth/constants";
 import { ROLES, type Role } from "@/validation/enums";
 
 export interface SessionPayload {
@@ -31,10 +32,15 @@ export async function verifyAccessToken(token: string | undefined): Promise<Sess
   }
 }
 
-/** Accepts only same-site paths: must start with a single "/" and contain no backslash. */
+/**
+ * Accepts only same-site paths: must start with a single "/", contain no backslash and not point
+ * at a guest-only auth page (with or without a query string or sub-path).
+ */
 export function getSafeRedirect(target: string | null | undefined): string | null {
   if (!target || !target.startsWith("/") || target.startsWith("//") || target.includes("\\")) {
     return null;
   }
+  const pathname = target.split(/[?#]/)[0];
+  if (AUTH_PAGES.some((page) => matchesPrefix(pathname, page))) return null;
   return target;
 }

@@ -50,7 +50,7 @@ export function LoginForm({ redirectTo }: { redirectTo: string | null }) {
     form.setFieldValue("password", MASKED_PASSWORD);
     setDemoRole(role);
     startDemo(async () => {
-      const result = await demoLoginAction(role);
+      const result = await demoLoginAction(role, redirectTo);
       if (result && !result.ok) {
         feedback.handleFailure(result);
         form.setFieldValue("password", "");

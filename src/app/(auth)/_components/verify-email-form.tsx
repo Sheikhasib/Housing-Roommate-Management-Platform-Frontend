@@ -139,7 +139,7 @@ export function VerifyEmailForm({ email, redirectTo }: { email: string; redirect
         <p className="text-center text-sm text-muted-foreground">
           Wrong email?{" "}
           <Link
-            href="/register"
+            href={redirectTo ? `/register?redirectTo=${encodeURIComponent(redirectTo)}` : "/register"}
             className="rounded font-medium text-primary outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             Start again
