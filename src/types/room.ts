@@ -31,3 +31,34 @@ export interface PublicRoom {
   nextAvailableDate: string | null;
   property: PublicRoomProperty;
 }
+
+export interface PublicOwner {
+  id: string;
+  name: string;
+  companyName: string | null;
+  user: { imageUrl: string | null } | null;
+}
+
+export interface RoomDetailProperty extends PublicRoomProperty {
+  owner: PublicOwner;
+}
+
+/** `GET /room/:roomId` as a guest. Money fields arrive as strings. */
+export interface RoomDetail extends Omit<PublicRoom, "property"> {
+  bookingDeposit: string;
+  minLeaseMonths: number;
+  sizeSqft: number | null;
+  amenities: string[] | null;
+  availableFrom: string | null;
+  vacantBeds: number;
+  upcomingReleaseDates: string[];
+  property: RoomDetailProperty;
+}
+
+/** Map fields of `GET /property/:propertyId` (guest view). Coordinates may arrive as strings. */
+export interface PropertyLocation {
+  address: string | null;
+  googleMapUrl: string | null;
+  latitude: number | string | null;
+  longitude: number | string | null;
+}
