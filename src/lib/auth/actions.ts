@@ -10,11 +10,20 @@ import { clearSessionCookies, getRefreshToken, setSessionCookies } from "@/lib/a
 import { getSafeRedirect, verifyAccessToken } from "@/lib/auth/jwt";
 import { getRoleHome } from "@/lib/permissions";
 import type { ApiSuccess } from "@/types/api";
+import {
+  forgotPasswordZodSchema,
+  googleLoginZodSchema,
+  registerZodSchema,
+  resetPasswordZodSchema,
+  verifyEmailZodSchema,
+  zodFieldErrors,
+  type RegisterInput,
+} from "@/validation/auth";
 import { ROLES, type Role } from "@/validation/enums";
 
 export type ActionResult =
   | { ok: true }
-  | { ok: false; message: string; fieldErrors?: Record<string, string> };
+  | { ok: false; message: string; status?: number; fieldErrors?: Record<string, string> };
 
 /** Env key used by the DEMO_<KEY>_EMAIL and DEMO_<KEY>_PASSWORD server variables. */
 const DEMO_ENV_KEY: Record<Role, string> = {
@@ -34,6 +43,7 @@ function failure(error: unknown): ActionResult {
     return {
       ok: false,
       message: error.message,
+      status: error.status,
       ...(Object.keys(fieldErrors).length > 0 ? { fieldErrors } : {}),
     };
   }
@@ -100,6 +110,97 @@ export async function demoLoginAction(role: Role): Promise<ActionResult> {
     return { ok: false, message: "Demo login is not available for this account" };
   }
   return loginWithCredentials(email, password);
+}
+
+function invalid(error: Parameters<typeof zodFieldErrors>[0]): ActionResult {
+  const fieldErrors = zodFieldErrors(error);
+  return {
+    ok: false,
+    message: Object.values(fieldErrors)[0] ?? "Check the highlighted fields",
+    fieldErrors,
+  };
+}
+
+/** Step 1 of registration: the backend stages the data and emails an OTP. No user exists yet. */
+export async function registerAction(input: RegisterInput): Promise<ActionResult> {
+  const parsed = registerZodSchema.safeParse(input);
+  if (!parsed.success) return invalid(parsed.error);
+  try {
+    await serverApi("/auth/register", { method: "POST", body: parsed.data });
+  } catch (error) {
+    return failure(error);
+  }
+  return { ok: true };
+}
+
+export async function verifyEmailAction(input: {
+  email: string;
+  otp: string;
+  redirectTo?: string | null;
+}): Promise<ActionResult> {
+  const parsed = verifyEmailZodSchema.safeParse({ email: input.email, otp: input.otp });
+  if (!parsed.success) return invalid(parsed.error);
+  let tokens: AuthTokens;
+  try {
+    const response = await serverApi<ApiSuccess<AuthTokens>>("/auth/verify-email", {
+      method: "POST",
+      body: parsed.data,
+    });
+    tokens = response.data;
+  } catch (error) {
+    return failure(error);
+  }
+  return startSession(tokens, input.redirectTo);
+}
+
+export async function forgotPasswordAction(input: { email: string }): Promise<ActionResult> {
+  const parsed = forgotPasswordZodSchema.safeParse({ email: input.email });
+  if (!parsed.success) return invalid(parsed.error);
+  try {
+    await serverApi("/auth/forgot-password", { method: "POST", body: parsed.data });
+  } catch (error) {
+    return failure(error);
+  }
+  return { ok: true };
+}
+
+export async function resetPasswordAction(input: {
+  email: string;
+  otp: string;
+  newPassword: string;
+}): Promise<ActionResult> {
+  const parsed = resetPasswordZodSchema.safeParse({
+    email: input.email,
+    otp: input.otp,
+    newPassword: input.newPassword,
+  });
+  if (!parsed.success) return invalid(parsed.error);
+  try {
+    await serverApi("/auth/reset-password", { method: "POST", body: parsed.data });
+  } catch (error) {
+    return failure(error);
+  }
+  return { ok: true };
+}
+
+/** The backend decides the role of a new Google user and whether an existing account is linked. */
+export async function googleAuthAction(
+  idToken: string,
+  redirectTo?: string | null,
+): Promise<ActionResult> {
+  const parsed = googleLoginZodSchema.safeParse({ idToken });
+  if (!parsed.success) return invalid(parsed.error);
+  let tokens: AuthTokens;
+  try {
+    const response = await serverApi<ApiSuccess<AuthTokens>>("/auth/google", {
+      method: "POST",
+      body: parsed.data,
+    });
+    tokens = response.data;
+  } catch (error) {
+    return failure(error);
+  }
+  return startSession(tokens, redirectTo);
 }
 
 export async function logoutAction(): Promise<void> {
