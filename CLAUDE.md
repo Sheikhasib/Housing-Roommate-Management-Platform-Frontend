@@ -85,3 +85,4 @@ never assume it is paid.
 - Change files with targeted edits. Never regenerate or rewrite a file or folder to apply a small change.
 - If a plan would touch more than 15 files, say so and wait for my OK before starting.
 - shadcn-generated files may import cn from the npm package cn: always import it from @/lib/utils instead.
+- Never kill processes by name (no taskkill /IM node.exe, no killall node): other servers of mine run on this machine. If a build is blocked, tell me and I will stop my dev server myself.
