@@ -1,12 +1,11 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
+
+import { useGetMe } from "@/hooks/useGetMe";
+import { logoutAction } from "@/lib/auth/actions";
 import type { Role } from "@/validation/enums";
 
-/**
- * TEMPORARY STUB. Replaced in 02-auth by the real session (useGetMe + cookies).
- * Keep every consumer on this hook so only this file changes.
- * It always returns a guest.
- */
 export interface SessionUser {
   name: string;
   email: string;
@@ -22,10 +21,25 @@ export interface Session {
   logout: () => Promise<void>;
 }
 
-async function logout(): Promise<void> {
-  // 02-auth replaces this with the logout Server Action.
-}
-
+/** The client session: the current user from GET /auth/me. Keep every consumer on this hook. */
 export function useSession(): Session {
-  return { user: null, role: null, isAuthenticated: false, isLoading: false, logout };
+  const queryClient = useQueryClient();
+  const { data, isPending } = useGetMe();
+
+  async function logout(): Promise<void> {
+    queryClient.clear();
+    await logoutAction();
+  }
+
+  const user: SessionUser | null = data
+    ? { name: data.name, email: data.email, role: data.role, avatarUrl: data.imageUrl || null }
+    : null;
+
+  return {
+    user,
+    role: user?.role ?? null,
+    isAuthenticated: user !== null,
+    isLoading: isPending,
+    logout,
+  };
 }
