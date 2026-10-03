@@ -29,6 +29,7 @@ Next.js App Router, TypeScript strict (no `any`), Tailwind CSS 4 + shadcn/ui,
 TanStack Query, Zustand, `@tanstack/react-form` + Zod, `ofetch`, Lucide icons,
 Sonner toasts, Recharts, `next-themes`, `@react-oauth/google`. Light and dark mode
 are both required. Package manager: **npm only** (never bun, pnpm, yarn).
+shadcn/ui on Radix primitives (use `asChild`); never mix in Base UI.
 Server Components by default; add `"use client"` only for state, effects or
 event handlers.
 
@@ -79,3 +80,8 @@ never assume it is paid.
 - Do not install a new library without asking.
 - If this file and the request disagree, ask before continuing.
 - Commit messages: `feat: ...`, `fix: ...`, `refactor: ...`.
+- When a generator or CLI (shadcn, create-next-app, npm) offers or defaults to a choice that a spec names, such as the component base, stop and ask me before accepting it.
+- Check a CLI option with `--help` before using it. Never guess flags.
+- Change files with targeted edits. Never regenerate or rewrite a file or folder to apply a small change.
+- If a plan would touch more than 15 files, say so and wait for my OK before starting.
+- shadcn-generated files may import cn from the npm package cn: always import it from @/lib/utils instead.
