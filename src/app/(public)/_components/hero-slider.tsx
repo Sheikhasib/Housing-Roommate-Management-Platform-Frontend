@@ -38,7 +38,7 @@ function usePrefersReducedMotion() {
 
 interface HeroSliderProps {
   slides: HeroSlide[];
-  /** The hero content (headline, search, Explore link) that sits on top of the photos. */
+  /** The hero content (headline, Explore link, search bar) that sits on top of the photos. */
   children: ReactNode;
 }
 
@@ -75,7 +75,7 @@ export function HeroSlider({ slides, children }: HeroSliderProps) {
     <section
       aria-roledescription="carousel"
       aria-label="Featured rooms"
-      className="relative h-[60vh] max-h-[70vh] overflow-hidden bg-muted md:h-[65vh]"
+      className="relative z-10 h-[60vh] max-h-[70vh] md:h-[65vh]"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={() => setFocused(true)}
@@ -97,7 +97,7 @@ export function HeroSlider({ slides, children }: HeroSliderProps) {
         }
       }}
     >
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 overflow-hidden bg-muted">
         {slides.map((item, position) => (
           <div
             key={item.id}
@@ -128,7 +128,7 @@ export function HeroSlider({ slides, children }: HeroSliderProps) {
         {children}
 
         {slide ? (
-          <div className="absolute inset-x-4 top-3 flex items-start gap-2 sm:inset-x-6 lg:inset-x-auto lg:top-auto lg:right-8 lg:bottom-16 lg:w-96">
+          <div className="absolute inset-x-4 bottom-32 flex items-end gap-2 sm:inset-x-6 lg:inset-x-auto lg:right-8 lg:bottom-14 lg:w-96">
             <div
               className="min-w-0 flex-1 rounded-xl border border-border bg-card p-3 text-card-foreground shadow-sm"
               aria-live={autoAdvance ? "off" : "polite"}

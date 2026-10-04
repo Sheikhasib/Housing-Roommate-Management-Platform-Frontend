@@ -52,12 +52,18 @@ export interface HomeStats {
   properties: SectionResult<number>;
 }
 
+/** One room type card: the available count and the first photo of the room that call returned. */
+export interface RoomTypeSummary {
+  count: number;
+  imageUrl: string | null;
+}
+
 export interface HomeData {
   heroRooms: SectionResult<PublicRoom[]>;
   /** Cities of the first 50 properties: the count for the stats strip and the search suggestions. */
   cities: SectionResult<string[]>;
   stats: HomeStats;
-  roomTypeCounts: Record<RoomType, SectionResult<number>>;
+  roomTypeCounts: Record<RoomType, SectionResult<RoomTypeSummary>>;
   featuredRooms: SectionResult<PublicRoom[]>;
 }
 
@@ -85,13 +91,19 @@ export async function getHomeData(): Promise<HomeData> {
   const roomTypeCounts = Object.fromEntries(
     ROOM_TYPES.map((type, index) => {
       const settled = typeResults[index];
-      const result: SectionResult<number> =
+      const result: SectionResult<RoomTypeSummary> =
         settled?.status === "fulfilled"
-          ? { ok: true, data: settled.value.meta.total }
+          ? {
+              ok: true,
+              data: {
+                count: settled.value.meta.total,
+                imageUrl: settled.value.data[0]?.images?.[0]?.url ?? null,
+              },
+            }
           : { ok: false };
       return [type, result];
     }),
-  ) as Record<RoomType, SectionResult<number>>;
+  ) as Record<RoomType, SectionResult<RoomTypeSummary>>;
 
   return {
     // Only rooms with a photo of their own become slides.

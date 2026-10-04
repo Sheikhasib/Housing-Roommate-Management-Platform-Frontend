@@ -1,9 +1,9 @@
 "use client";
 
-import { useId, useTransition } from "react";
+import { useEffect, useId, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "@tanstack/react-form";
-import { Loader2, Search } from "lucide-react";
+import { ChevronDown, Loader2, Search } from "lucide-react";
 
 import { FormField, firstError } from "@/components/shared/form-field";
 import { Button } from "@/components/ui/button";
@@ -16,16 +16,52 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ROOM_TYPE_LABELS } from "@/lib/room-labels";
+import { cn } from "@/lib/utils";
 import { ROOM_TYPES } from "@/validation/enums";
 import { buildRoomsSearchHref, homeSearchSchema } from "@/validation/home-search";
 
 const ANY = "any";
+/** The open room type menu is portaled out of the form, so outside-click and Escape skip it. */
+const SELECT_MENU = '[data-slot="select-content"]';
 
-/** Hero search. Sends the filled-in fields to /rooms, where they live in the URL. */
+/**
+ * Hero search bar: one short row from lg up. Below lg, city, room type and max rent move into a
+ * "More filters" panel (a solid card surface) that closes on outside click and on Escape. The
+ * fields are rendered once, so every label stays connected to its input. Sends the filled-in
+ * fields to /rooms, where they live in the URL.
+ */
 export function HeroSearch({ cities }: { cities: string[] }) {
   const router = useRouter();
   const prefix = useId();
   const [pending, startTransition] = useTransition();
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!filtersOpen) return;
+
+    function onPointerDown(event: PointerEvent) {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (rootRef.current?.contains(target) || target.closest(SELECT_MENU)) return;
+      setFiltersOpen(false);
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      // While the room type menu is open, Escape closes that menu first.
+      if (event.key !== "Escape" || document.querySelector(SELECT_MENU)) return;
+      setFiltersOpen(false);
+      toggleRef.current?.focus();
+    }
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [filtersOpen]);
 
   const form = useForm({
     defaultValues: { searchTerm: "", city: "", type: "", maxRent: "" },
@@ -39,26 +75,33 @@ export function HeroSearch({ cities }: { cities: string[] }) {
   });
 
   const cityListId = `${prefix}-cities`;
+  const panelId = `${prefix}-filters`;
 
   return (
+    <div
+      ref={rootRef}
+      className="relative rounded-xl border border-border bg-card p-3 text-card-foreground shadow-md"
+    >
     <form
       noValidate
       role="search"
       aria-label="Search rooms"
-      className="grid grid-cols-2 gap-2 sm:gap-3"
+      className="flex flex-col gap-1 lg:grid lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.8fr)_auto] lg:items-start lg:gap-3"
       onSubmit={(event) => {
         event.preventDefault();
         event.stopPropagation();
+        setFiltersOpen(false);
         void form.handleSubmit();
       }}
     >
+      <div className="flex items-start gap-2 lg:contents">
       <form.Field name="searchTerm">
         {(field) => (
           <FormField
             id={`${prefix}-search`}
             label="Search text"
             error={firstError(field.state.meta.errors)}
-            className="col-span-2 [&>label]:sr-only"
+            className="min-w-0 flex-1 [&>label]:sr-only"
           >
             {(control) => (
               <div className="relative">
@@ -83,13 +126,56 @@ export function HeroSearch({ cities }: { cities: string[] }) {
         )}
       </form.Field>
 
+      <Button type="submit" disabled={pending} className="shrink-0 lg:order-1">
+        {pending ? (
+          <Loader2 className="animate-spin" aria-hidden="true" />
+        ) : (
+          <Search aria-hidden="true" />
+        )}
+        {pending ? "Searching" : "Search"}
+      </Button>
+      </div>
+
+      <form.Subscribe selector={(state) => state.values}>
+        {(values) => {
+          const active = [values.city, values.type, values.maxRent].filter(Boolean).length;
+          return (
+            <Button
+              ref={toggleRef}
+              type="button"
+              variant="ghost"
+              aria-expanded={filtersOpen}
+              aria-controls={panelId}
+              onClick={() => setFiltersOpen((open) => !open)}
+              className="self-start text-primary hover:text-primary lg:hidden"
+            >
+              More filters{active > 0 ? ` (${active})` : ""}
+              <ChevronDown
+                className={cn(
+                  "transition-transform duration-150 motion-reduce:transition-none",
+                  filtersOpen && "rotate-180",
+                )}
+                aria-hidden="true"
+              />
+            </Button>
+          );
+        }}
+      </form.Subscribe>
+
+      <div
+        id={panelId}
+        className={cn(
+          "absolute inset-x-0 top-full z-30 mt-2 gap-3 rounded-xl border border-border bg-card p-4 text-card-foreground shadow-md sm:grid-cols-3 lg:contents",
+          filtersOpen ? "grid" : "hidden",
+        )}
+      >
       <form.Field name="city">
         {(field) => (
           <FormField
             id={`${prefix}-city`}
             label="City"
             error={firstError(field.state.meta.errors)}
-            className="[&>label]:sr-only"
+            className="min-w-0 lg:[&>label]:sr-only"
           >
             {(control) => (
               <>
@@ -122,7 +208,7 @@ export function HeroSearch({ cities }: { cities: string[] }) {
             id={`${prefix}-type`}
             label="Room type"
             error={firstError(field.state.meta.errors)}
-            className="[&>label]:sr-only"
+            className="min-w-0 lg:[&>label]:sr-only"
           >
             {(control) => (
               <Select
@@ -152,7 +238,7 @@ export function HeroSearch({ cities }: { cities: string[] }) {
             id={`${prefix}-max-rent`}
             label="Max rent per month"
             error={firstError(field.state.meta.errors)}
-            className="[&>label]:sr-only"
+            className="min-w-0 lg:[&>label]:sr-only"
           >
             {(control) => (
               <Input
@@ -170,15 +256,8 @@ export function HeroSearch({ cities }: { cities: string[] }) {
           </FormField>
         )}
       </form.Field>
-
-      <Button type="submit" disabled={pending} className="self-start">
-        {pending ? (
-          <Loader2 className="animate-spin" aria-hidden="true" />
-        ) : (
-          <Search aria-hidden="true" />
-        )}
-        {pending ? "Searching" : "Search"}
-      </Button>
+      </div>
     </form>
+    </div>
   );
 }
