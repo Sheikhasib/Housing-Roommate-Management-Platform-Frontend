@@ -46,6 +46,36 @@ function distinctCities(properties: PublicPropertySummary[]): string[] {
   return [...byKey.values()].sort((a, b) => a.localeCompare(b));
 }
 
+const POPULAR_CITY_COUNT = 6;
+
+/** One Popular cities card: the city, its summed room count and its first property's photo. */
+export interface PopularCity {
+  city: string;
+  roomCount: number;
+  imageUrl: string | null;
+}
+
+/** Groups properties by city (case-insensitive), sums `_count.rooms` and keeps the busiest cities. */
+function popularCities(properties: PublicPropertySummary[]): PopularCity[] {
+  const byKey = new Map<string, PopularCity>();
+  for (const property of properties) {
+    const city = property.city?.trim();
+    if (!city) continue;
+    const key = city.toLowerCase();
+    const image = property.images?.[0]?.url ?? null;
+    const existing = byKey.get(key);
+    if (existing) {
+      existing.roomCount += property._count.rooms;
+      existing.imageUrl ??= image;
+    } else {
+      byKey.set(key, { city, roomCount: property._count.rooms, imageUrl: image });
+    }
+  }
+  return [...byKey.values()]
+    .sort((a, b) => b.roomCount - a.roomCount || a.city.localeCompare(b.city))
+    .slice(0, POPULAR_CITY_COUNT);
+}
+
 export interface HomeStats {
   roomsListed: SectionResult<number>;
   roomsAvailable: SectionResult<number>;
@@ -65,11 +95,13 @@ export interface HomeData {
   stats: HomeStats;
   roomTypeCounts: Record<RoomType, SectionResult<RoomTypeSummary>>;
   featuredRooms: SectionResult<PublicRoom[]>;
+  popularCities: SectionResult<PopularCity[]>;
+  featuredProperties: SectionResult<PublicPropertySummary[]>;
 }
 
 /** Everything the top half of Home needs. All calls run in parallel and fail independently. */
 export async function getHomeData(): Promise<HomeData> {
-  const [hero, listed, available, propertyTotal, propertyList, featured, typeCounts] =
+  const [hero, listed, available, propertyTotal, propertyList, featured, typeCounts, featuredProps] =
     await Promise.allSettled([
       readRooms({ limit: 10, sortBy: "createdAt", sortOrder: "desc" }),
       readRooms({ limit: 1, availability: "all" }),
@@ -78,6 +110,7 @@ export async function getHomeData(): Promise<HomeData> {
       readProperties({ limit: 50 }),
       readRooms({ limit: 6, sortBy: "createdAt", sortOrder: "desc" }),
       Promise.allSettled(ROOM_TYPES.map((type) => readRooms({ type, limit: 1 }))),
+      readProperties({ limit: 6 }),
     ]);
 
   const heroResult = toResult(hero);
@@ -86,6 +119,7 @@ export async function getHomeData(): Promise<HomeData> {
   const propertyTotalResult = toResult(propertyTotal);
   const propertyListResult = toResult(propertyList);
   const featuredResult = toResult(featured);
+  const featuredPropertiesResult = toResult(featuredProps);
   const typeResults = typeCounts.status === "fulfilled" ? typeCounts.value : [];
 
   const roomTypeCounts = Object.fromEntries(
@@ -129,5 +163,11 @@ export async function getHomeData(): Promise<HomeData> {
     },
     roomTypeCounts,
     featuredRooms: featuredResult.ok ? { ok: true, data: featuredResult.data.data } : { ok: false },
+    popularCities: propertyListResult.ok
+      ? { ok: true, data: popularCities(propertyListResult.data.data) }
+      : { ok: false },
+    featuredProperties: featuredPropertiesResult.ok
+      ? { ok: true, data: featuredPropertiesResult.data.data }
+      : { ok: false },
   };
 }

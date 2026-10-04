@@ -1,5 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { FeaturedPropertiesSectionSkeleton } from "./_components/featured-properties-section";
 import { FeaturedRoomsSectionSkeleton } from "./_components/featured-rooms-section";
+import { PopularCitiesSectionSkeleton } from "./_components/popular-cities-section";
 import { RoomTypeSectionSkeleton } from "./_components/room-type-section";
 import { StatsStripSkeleton } from "./_components/stats-strip";
 
@@ -32,6 +34,8 @@ export default function HomeLoading() {
       <StatsStripSkeleton />
       <RoomTypeSectionSkeleton />
       <FeaturedRoomsSectionSkeleton />
+      <PopularCitiesSectionSkeleton />
+      <FeaturedPropertiesSectionSkeleton />
     </div>
   );
 }
