@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { getHomeData } from "@/lib/api/home";
-import { APP_NAME } from "@/lib/constants";
+import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import { CtaBand } from "./_components/cta-band";
 import { FaqSection } from "./_components/faq-section";
 import { FeaturedPropertiesSection } from "./_components/featured-properties-section";
@@ -14,7 +14,7 @@ import { StatsStrip } from "./_components/stats-strip";
 import { WhyChooseUsSection } from "./_components/why-choose-us-section";
 
 export const metadata: Metadata = {
-  title: { absolute: `${APP_NAME}: find a room and a roommate` },
+  title: { absolute: `${APP_NAME}: ${APP_TAGLINE}` },
   description:
     "Browse real rooms, beds and flats, book a viewing and pay your deposit online. Owners list their properties and manage rent, leases and maintenance in one place.",
 };

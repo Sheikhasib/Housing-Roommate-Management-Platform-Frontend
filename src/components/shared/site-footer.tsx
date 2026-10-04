@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { Building2, Globe, Mail, MapPin, Phone } from "lucide-react";
+import { Building2, Clock, Mail, MapPin, Phone } from "lucide-react";
 
-import { APP_NAME, CONTACT, SOCIAL_LINKS } from "@/lib/constants";
+import { SocialIcon } from "@/components/shared/social-icons";
+import { APP_NAME, APP_TAGLINE, CONTACT, SOCIAL_LINKS } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 
 const EXPLORE_LINKS = [
   { label: "Home", href: "/" },
@@ -18,8 +20,11 @@ const SUPPORT_LINKS = [
 const linkClass =
   "rounded-sm text-sm text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 outline-none";
 
+const socialClass =
+  "inline-flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground";
+
 export function SiteFooter() {
-  const hasContact = Boolean(CONTACT.email || CONTACT.phone || CONTACT.address);
+  const hasContact = Boolean(CONTACT.email || CONTACT.phone || CONTACT.address || CONTACT.hours);
 
   return (
     <footer className="border-t border-border bg-card">
@@ -31,26 +36,32 @@ export function SiteFooter() {
             </span>
             {APP_NAME}
           </Link>
-          <p className="max-w-xs text-sm text-muted-foreground">
-            Find a room and a roommate, and manage rent, leases and maintenance in one place.
-          </p>
-          {SOCIAL_LINKS.length > 0 ? (
-            <ul className="flex flex-wrap gap-2">
-              {SOCIAL_LINKS.map((social) => (
-                <li key={social.href}>
+          <p className="max-w-xs text-sm text-muted-foreground">{APP_TAGLINE}</p>
+          <ul className="flex flex-wrap gap-2">
+            {SOCIAL_LINKS.map((social) => (
+              <li key={social.name}>
+                {social.href ? (
                   <a
                     href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex h-10 items-center gap-2 rounded-lg border border-border px-3 text-sm text-muted-foreground transition-colors duration-150 hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 outline-none"
+                    aria-label={social.name}
+                    {...(social.href.startsWith("mailto:")
+                      ? {}
+                      : { target: "_blank", rel: "noopener noreferrer" })}
+                    className={cn(
+                      socialClass,
+                      "transition-colors duration-150 hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 outline-none",
+                    )}
                   >
-                    <Globe className="size-4" aria-hidden />
-                    {social.label}
+                    <SocialIcon name={social.name} />
                   </a>
-                </li>
-              ))}
-            </ul>
-          ) : null}
+                ) : (
+                  <span role="img" aria-label={social.name} className={cn(socialClass, "cursor-default")}>
+                    <SocialIcon name={social.name} />
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <nav aria-label="Explore" className="space-y-3">
@@ -100,9 +111,13 @@ export function SiteFooter() {
               {CONTACT.phone ? (
                 <li className="flex items-start gap-2">
                   <Phone className="mt-0.5 size-4 shrink-0" aria-hidden />
-                  <a href={`tel:${CONTACT.phone}`} className={linkClass}>
-                    {CONTACT.phone}
-                  </a>
+                  <span>{CONTACT.phone}</span>
+                </li>
+              ) : null}
+              {CONTACT.hours ? (
+                <li className="flex items-start gap-2">
+                  <Clock className="mt-0.5 size-4 shrink-0" aria-hidden />
+                  <span>{CONTACT.hours}</span>
                 </li>
               ) : null}
             </ul>
