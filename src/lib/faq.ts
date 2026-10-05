@@ -55,6 +55,7 @@ export const FAQ_ITEMS: readonly FaqItem[] = [
     question: "What happens to my deposit if a lease is terminated?",
     answer:
       "A lease can be terminated while it is active by the tenant, the owner or an admin, with a written reason. If the deposit was paid and the lease start date is still in the future, the deposit is refunded. If the lease has already started, there is no refund. Terminating also frees the bed and cancels the lease's unpaid and processing invoices. SSLCommerz deposits have no automated refund: they are held for an admin to refund.",
+    link: { href: "/terms#refunds", label: "Read the refund terms" },
   },
   {
     id: "roommate-matching",
