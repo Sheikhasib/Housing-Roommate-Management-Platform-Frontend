@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { Building2, Clock, Mail, MapPin, Phone } from "lucide-react";
 
-import { SocialIcon } from "@/components/shared/social-icons";
-import { APP_NAME, APP_TAGLINE, CONTACT, SOCIAL_LINKS } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { SocialLinks } from "@/components/shared/social-links";
+import { APP_NAME, APP_TAGLINE, CONTACT } from "@/lib/constants";
 
 const EXPLORE_LINKS = [
   { label: "Home", href: "/" },
@@ -20,9 +19,6 @@ const SUPPORT_LINKS = [
 const linkClass =
   "rounded-sm text-sm text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 outline-none";
 
-const socialClass =
-  "inline-flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground";
-
 export function SiteFooter() {
   const hasContact = Boolean(CONTACT.email || CONTACT.phone || CONTACT.address || CONTACT.hours);
 
@@ -37,31 +33,7 @@ export function SiteFooter() {
             {APP_NAME}
           </Link>
           <p className="max-w-xs text-sm text-muted-foreground">{APP_TAGLINE}</p>
-          <ul className="flex flex-wrap gap-2">
-            {SOCIAL_LINKS.map((social) => (
-              <li key={social.name}>
-                {social.href ? (
-                  <a
-                    href={social.href}
-                    aria-label={social.name}
-                    {...(social.href.startsWith("mailto:")
-                      ? {}
-                      : { target: "_blank", rel: "noopener noreferrer" })}
-                    className={cn(
-                      socialClass,
-                      "transition-colors duration-150 hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 outline-none",
-                    )}
-                  >
-                    <SocialIcon name={social.name} />
-                  </a>
-                ) : (
-                  <span role="img" aria-label={social.name} className={cn(socialClass, "cursor-default")}>
-                    <SocialIcon name={social.name} />
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
+          <SocialLinks />
         </div>
 
         <nav aria-label="Explore" className="space-y-3">
