@@ -113,7 +113,7 @@
   --sidebar-border: #e2e8f0;
   --sidebar-ring: #0f766e;
   --aura-opacity: 0.18;
-  --aura-glow-k: 250%;
+  --aura-glow-k: 140%;
 }
 
 .dark {
@@ -164,8 +164,8 @@
   --sidebar-accent-foreground: #5eead4;
   --sidebar-border: #1e293b;
   --sidebar-ring: #2dd4bf;
-  --aura-opacity: 0.22;
-  --aura-glow-k: 150%;
+  --aura-opacity: 0.21;
+  --aura-glow-k: 115%;
 }
 
 @layer base {
