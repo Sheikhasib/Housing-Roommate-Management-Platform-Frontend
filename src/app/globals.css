@@ -112,6 +112,8 @@
   --sidebar-accent-foreground: #0f766e;
   --sidebar-border: #e2e8f0;
   --sidebar-ring: #0f766e;
+  --aura-opacity: 0.18;
+  --aura-glow-k: 250%;
 }
 
 .dark {
@@ -162,6 +164,8 @@
   --sidebar-accent-foreground: #5eead4;
   --sidebar-border: #1e293b;
   --sidebar-ring: #2dd4bf;
+  --aura-opacity: 0.22;
+  --aura-glow-k: 150%;
 }
 
 @layer base {
@@ -173,6 +177,55 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* Layered radial and beam technique inspired by Aura (MIT), github.com/CristianOlivera1/Aura */
+/* Kill switch: set --aura-opacity to 0 (in :root and .dark) to turn off every aura and glow. */
+.bg-aura {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+.bg-aura::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      115deg,
+      transparent 0 56px,
+      color-mix(in oklab, var(--primary) 85%, transparent) 56px 84px,
+      transparent 84px 140px
+    ),
+    radial-gradient(70% 55% at 12% 0%, var(--primary), transparent 70%),
+    radial-gradient(55% 50% at 92% 18%, var(--brand-secondary), transparent 70%),
+    radial-gradient(50% 45% at 55% 100%, var(--brand-accent), transparent 72%);
+  opacity: var(--aura-opacity);
+  filter: blur(28px);
+}
+
+.dark .bg-aura::before {
+  mix-blend-mode: screen;
+}
+
+.bg-aura-subtle {
+  --aura-opacity: 0.06;
+}
+
+.aura-glow:hover {
+  box-shadow: 0 8px 24px -8px
+    color-mix(in oklab, var(--primary) calc(var(--aura-opacity) * var(--aura-glow-k)), transparent);
+}
+
+@media (prefers-contrast: more) {
+  :root,
+  .dark,
+  .bg-aura-subtle {
+    --aura-opacity: 0;
   }
 }
 

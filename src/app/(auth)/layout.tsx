@@ -6,7 +6,7 @@ import { APP_NAME } from "@/lib/constants";
 
 export default function AuthLayout({ children }: LayoutProps<"/">) {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="bg-aura flex min-h-screen flex-col bg-background">
       <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link
           href="/"

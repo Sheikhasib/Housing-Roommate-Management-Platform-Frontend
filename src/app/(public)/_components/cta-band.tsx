@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export function CtaBand() {
   return (
-    <section aria-labelledby="cta-heading" className="bg-primary py-12 text-primary-foreground md:py-16 dark:border-y dark:border-border dark:bg-accent dark:text-foreground">
+    <section aria-labelledby="cta-heading" className="bg-aura bg-primary py-12 text-primary-foreground md:py-16 dark:border-y dark:border-border dark:bg-accent dark:text-foreground">
       <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 sm:px-6 md:flex-row md:items-center lg:px-8">
         <div className="max-w-xl space-y-2">
           <h2 id="cta-heading" className="text-2xl font-semibold">

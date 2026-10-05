@@ -92,7 +92,7 @@ Measured WCAG contrast. Light: body text on white 17.85:1, muted text 7.58:1, wh
 
 ### Shape, space and depth
 - Radius: cards and images `rounded-xl`; buttons and inputs `rounded-lg`; badges and chips `rounded-full`.
-- Depth: `shadow-sm` at rest, `shadow-md` on hover for clickable cards; 1 px `--border` lines. No gradients, glass effects or heavy shadows.
+- Depth: `shadow-sm` at rest, `shadow-md` on hover for clickable cards; 1 px `--border` lines. A faint ambient gradient built from the three brand tokens is allowed on page backgrounds and card hover glow; text must sit on solid surfaces or on a tint that keeps at least 4.5:1 contrast. No glass effects or heavy shadows. Use `.bg-aura` and `.aura-glow` from `globals.css`; `--aura-opacity: 0` turns them all off.
 - Spacing on a 4 px grid. Public container `max-w-7xl` with `px-4 sm:px-6 lg:px-8`; dashboard content `max-w-6xl`. Section spacing `py-12 md:py-16` on public pages, `space-y-6` in dashboards.
 - Motion: 150 to 200 ms transitions on hover and focus; the hero slider fades or slides; skeleton pulse is allowed. Respect `prefers-reduced-motion`. No animation library.
 
@@ -192,7 +192,7 @@ None for visuals. Status wording and color mapping follow 01-foundation.
 - [ ] Text contrast is at least 4.5:1 and input borders at least 3:1 in both themes, using the token values above.
 - [ ] Every form shows validation errors, a loader, a success state, and has labels connected to inputs.
 - [ ] Skeletons match their final layouts; every empty state has an icon, a title and an action.
-- [ ] No gradients, glass effects or heavy shadows; transitions are 150 to 200 ms and `prefers-reduced-motion` is respected.
+- [ ] Gradients only as the faint brand-token aura (text keeps at least 4.5:1); no glass effects or heavy shadows; transitions are 150 to 200 ms and `prefers-reduced-motion` is respected.
 
 ## Out of scope
 Custom illustrations, brand logo design, multi-language interface, testimonials, newsletter and blog sections (no backend data).

@@ -72,7 +72,7 @@ export function DashboardShell({ area, children }: DashboardShellProps) {
           onOpenMobileNav={() => setMobileOpen(true)}
           onToggleCollapsed={() => setCollapsed((value) => !value)}
         />
-        <main id="main" className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <main id="main" className="bg-aura bg-aura-subtle flex-1 px-4 py-6 sm:px-6 lg:px-8">
           {children}
         </main>
       </div>

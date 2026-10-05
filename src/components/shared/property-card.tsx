@@ -23,7 +23,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
   const startingRent = property.rooms[0]?.monthlyRent ?? null;
 
   return (
-    <article className="relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-shadow duration-150 hover:shadow-md has-[a:focus-visible]:ring-3 has-[a:focus-visible]:ring-ring/50">
+    <article className="aura-glow relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-shadow duration-150 hover:shadow-md has-[a:focus-visible]:ring-3 has-[a:focus-visible]:ring-ring/50">
       <div className="relative aspect-4/3 w-full shrink-0 bg-muted">
         {image ? (
           <Image

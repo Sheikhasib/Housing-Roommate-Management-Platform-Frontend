@@ -56,7 +56,7 @@ export function RoomTypeSection({ counts }: { counts: HomeData["roomTypeCounts"]
               <li key={type} className="h-full">
                 <Link
                   href={`/rooms?type=${type}`}
-                  className="flex h-full flex-col gap-3 rounded-xl border border-border bg-card p-3 shadow-sm outline-none transition-shadow duration-150 hover:shadow-md focus-visible:ring-3 focus-visible:ring-ring/50"
+                  className="aura-glow flex h-full flex-col gap-3 rounded-xl border border-border bg-card p-3 shadow-sm outline-none transition-shadow duration-150 hover:shadow-md focus-visible:ring-3 focus-visible:ring-ring/50"
                 >
                   <span className="relative block aspect-[16/10] w-full overflow-hidden rounded-xl bg-accent text-accent-foreground">
                     {imageUrl ? (
