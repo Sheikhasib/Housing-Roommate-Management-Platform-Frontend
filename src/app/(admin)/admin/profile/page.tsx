@@ -1,0 +1,9 @@
+import type { Metadata } from "next";
+
+import { ProfilePage } from "@/components/shared/profile-page";
+
+export const metadata: Metadata = { title: "Profile" };
+
+export default function AdminProfilePage() {
+  return <ProfilePage />;
+}
