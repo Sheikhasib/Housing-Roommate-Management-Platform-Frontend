@@ -1,5 +1,13 @@
 import { apiClient } from "@/lib/api/apiClient";
-import type { AdminUser, OwnerVerificationRow, TenantVerificationRow } from "@/types/admin";
+import type {
+  AdminPaymentRow,
+  AdminPropertyRow,
+  AdminUser,
+  AuditLogRow,
+  OwnerVerificationRow,
+  PendingRefundRow,
+  TenantVerificationRow,
+} from "@/types/admin";
 import type { ApiMeta, ApiSuccess } from "@/types/api";
 
 export interface ListResult<T> {
@@ -80,4 +88,64 @@ export function reviewOwner(ownerProfileId: string, body: ReviewBody) {
     method: "PATCH",
     body: { ownerProfileId, ...body },
   });
+}
+
+export interface PropertiesQuery {
+  page: number;
+  limit: number;
+  searchTerm: string;
+  city: string;
+  type: string;
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+}
+
+export function getAdminProperties(query: PropertiesQuery) {
+  return list<AdminPropertyRow>("/property/all", { ...query });
+}
+
+/** Admin soft delete: only the property row is hidden, units and rooms are untouched. */
+export function deleteProperty(propertyId: string) {
+  return apiClient<ApiSuccess<unknown>>(`/property/${propertyId}`, { method: "DELETE" });
+}
+
+export interface PaymentsQuery {
+  page: number;
+  limit: number;
+  status: string;
+  purpose: string;
+}
+
+export function getAdminPayments(query: PaymentsQuery) {
+  return list<AdminPaymentRow>("/payment/all-payments", { ...query });
+}
+
+export function getPendingRefunds(query: { page: number; limit: number }) {
+  return list<PendingRefundRow>("/admin/payments/pending-refunds", { ...query });
+}
+
+export interface ResolveRefundBody {
+  outcome: "REFUNDED" | "NOT_REFUNDED";
+  refundTrxId?: string;
+  note?: string;
+}
+
+export function resolvePendingRefund(paymentId: string, body: ResolveRefundBody) {
+  return apiClient<ApiSuccess<unknown>>(`/admin/payments/pending-refunds/${paymentId}/resolve`, {
+    method: "POST",
+    body,
+  });
+}
+
+export interface AuditLogsQuery {
+  page: number;
+  limit: number;
+  action: string;
+  entity: string;
+  actorId: string;
+  actorEmail: string;
+}
+
+export function getAuditLogs(query: AuditLogsQuery) {
+  return list<AuditLogRow>("/admin/audit-logs", { ...query });
 }

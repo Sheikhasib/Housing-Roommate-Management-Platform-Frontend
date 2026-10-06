@@ -1,5 +1,13 @@
 import type { VerificationDocument } from "@/types/profile";
-import type { Role, UserStatus, VerificationStatus } from "@/validation/enums";
+import type {
+  PaymentGateway,
+  PaymentPurpose,
+  PaymentStatus,
+  PropertyType,
+  Role,
+  UserStatus,
+  VerificationStatus,
+} from "@/validation/enums";
 
 /** Shape of `GET /admin/dashboard-stats` (docs/backend-specs/15-admin.md). */
 export interface AdminDashboardStats {
@@ -75,4 +83,67 @@ export interface OwnerVerificationRow {
   createdAt: string;
   user: VerificationUser;
   _count: { properties: number };
+}
+
+/** A row of `GET /property/all` (docs/backend-specs/05-property.md). */
+export interface AdminPropertyRow {
+  id: string;
+  title: string;
+  type: PropertyType;
+  city: string;
+  area: string | null;
+  createdAt: string;
+  owner: { id: string; name: string; email: string; verificationStatus: VerificationStatus };
+  _count: { rooms: number };
+}
+
+/** The tenant on a payment, reached through the application or the invoice's lease. */
+export interface PaymentTenant {
+  id: string;
+  name: string;
+  email: string;
+}
+
+/** A row of `GET /payment/all-payments` (docs/backend-specs/12-payment.md). Money arrives as a Decimal string. */
+export interface AdminPaymentRow {
+  id: string;
+  status: PaymentStatus;
+  purpose: PaymentPurpose;
+  gateway: PaymentGateway;
+  amount: string | number;
+  currency: string;
+  createdAt: string;
+  application: { id: string; tenantProfile: PaymentTenant } | null;
+  invoice: { id: string; type: string; lease: { tenantProfile: PaymentTenant } | null } | null;
+}
+
+/**
+ * A row of `GET /admin/payments/pending-refunds`. The backend spec lists the tenant profile and lease
+ * status as included but not their field names, so only the Payment columns are typed here.
+ */
+export interface PendingRefundRow {
+  id: string;
+  status: PaymentStatus;
+  purpose: PaymentPurpose;
+  gateway: PaymentGateway;
+  amount: string | number;
+  currency: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** A row of `GET /admin/audit-logs`. `before` and `after` are free-form JSON. */
+export interface AuditLogRow {
+  id: string;
+  action: string;
+  entity: string;
+  entityId: string | null;
+  actorId: string | null;
+  actorEmail: string | null;
+  actorRole: string | null;
+  before: unknown;
+  after: unknown;
+  ipAddress: string | null;
+  userAgent: string | null;
+  createdAt: string;
 }

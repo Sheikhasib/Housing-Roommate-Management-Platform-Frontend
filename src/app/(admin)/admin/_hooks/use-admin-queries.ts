@@ -7,9 +7,16 @@ import { toast } from "sonner";
 
 import { ApiError } from "@/lib/api/apiError";
 import {
+  getAdminPayments,
+  getAdminProperties,
   getAdminUsers,
+  getAuditLogs,
   getOwnerVerifications,
+  getPendingRefunds,
   getTenantVerifications,
+  type AuditLogsQuery,
+  type PaymentsQuery,
+  type PropertiesQuery,
   type UsersQuery,
   type VerificationQuery,
 } from "@/lib/api/adminClient";
@@ -17,6 +24,10 @@ import {
 export const ADMIN_USERS_KEY = ["admin", "users"] as const;
 export const TENANT_VERIFICATIONS_KEY = ["admin", "tenant-verifications"] as const;
 export const OWNER_VERIFICATIONS_KEY = ["admin", "owner-verifications"] as const;
+export const ADMIN_PROPERTIES_KEY = ["admin", "properties"] as const;
+export const ADMIN_PAYMENTS_KEY = ["admin", "payments"] as const;
+export const PENDING_REFUNDS_KEY = ["admin", "pending-refunds"] as const;
+export const AUDIT_LOGS_KEY = ["admin", "audit-logs"] as const;
 
 const LIST_OPTIONS = { retry: false, refetchOnWindowFocus: false, placeholderData: keepPreviousData } as const;
 
@@ -56,6 +67,46 @@ export function useOwnerVerifications(query: VerificationQuery & { verificationS
   const result = useQuery({
     queryKey: [...OWNER_VERIFICATIONS_KEY, query],
     queryFn: () => getOwnerVerifications(query),
+    ...LIST_OPTIONS,
+  });
+  useErrorToast(result.error);
+  return result;
+}
+
+export function useAdminProperties(query: PropertiesQuery) {
+  const result = useQuery({
+    queryKey: [...ADMIN_PROPERTIES_KEY, query],
+    queryFn: () => getAdminProperties(query),
+    ...LIST_OPTIONS,
+  });
+  useErrorToast(result.error);
+  return result;
+}
+
+export function useAdminPayments(query: PaymentsQuery) {
+  const result = useQuery({
+    queryKey: [...ADMIN_PAYMENTS_KEY, query],
+    queryFn: () => getAdminPayments(query),
+    ...LIST_OPTIONS,
+  });
+  useErrorToast(result.error);
+  return result;
+}
+
+export function usePendingRefunds(query: { page: number; limit: number }) {
+  const result = useQuery({
+    queryKey: [...PENDING_REFUNDS_KEY, query],
+    queryFn: () => getPendingRefunds(query),
+    ...LIST_OPTIONS,
+  });
+  useErrorToast(result.error);
+  return result;
+}
+
+export function useAuditLogs(query: AuditLogsQuery) {
+  const result = useQuery({
+    queryKey: [...AUDIT_LOGS_KEY, query],
+    queryFn: () => getAuditLogs(query),
     ...LIST_OPTIONS,
   });
   useErrorToast(result.error);
