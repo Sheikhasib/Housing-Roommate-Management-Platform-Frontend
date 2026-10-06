@@ -58,7 +58,7 @@ export function RoomBookingCard({ room, role }: BookingProps) {
           </Fact>
           <Fact icon={<CalendarDays className="size-4" />}>{nextAvailableText(room)}</Fact>
         </ul>
-        <RoomCta roomId={room.id} role={role} />
+        <RoomCta room={room} role={role} />
       </div>
     </aside>
   );
@@ -74,7 +74,7 @@ export function RoomBookingBar({ room, role }: BookingProps) {
           <p className="truncate text-xs text-muted-foreground">{nextAvailableText(room)}</p>
         </div>
         <div className="shrink-0">
-          <RoomCta roomId={room.id} role={role} layout="bar" />
+          <RoomCta room={room} role={role} layout="bar" />
         </div>
       </div>
     </div>

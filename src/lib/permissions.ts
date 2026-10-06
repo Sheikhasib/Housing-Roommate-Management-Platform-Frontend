@@ -7,6 +7,7 @@ import type { Role } from "@/validation/enums";
  */
 const OWNER_SIDE = ["OWNER", "PROPERTY_MANAGER"] as const satisfies readonly Role[];
 const OWNER_ONLY = ["OWNER"] as const satisfies readonly Role[];
+const TENANT_ONLY = ["TENANT"] as const satisfies readonly Role[];
 
 export const PERMISSIONS = {
   // Shared by owner and manager
@@ -29,6 +30,9 @@ export const PERMISSIONS = {
   "payments.view": OWNER_ONLY,
   "payments.refund": OWNER_ONLY,
   "ownerVerification.manage": OWNER_ONLY,
+  // Tenant only
+  "applications.apply": TENANT_ONLY,
+  "applications.cancel": TENANT_ONLY,
   // Admin area: role changes belong to SUPER_ADMIN only
   "users.changeRole": ["SUPER_ADMIN"],
   // Analytics: each side sees its own version

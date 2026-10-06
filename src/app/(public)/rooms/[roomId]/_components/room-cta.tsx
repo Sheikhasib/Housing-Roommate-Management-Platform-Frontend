@@ -2,22 +2,34 @@ import Link from "next/link";
 import { LayoutDashboard } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/format";
 import { getRoleHome } from "@/lib/permissions";
+import type { RoomDetail } from "@/types/room";
 import type { Role } from "@/validation/enums";
+import { ApplyDialog } from "./apply-dialog";
 
 interface RoomCtaProps {
-  roomId: string;
+  room: RoomDetail;
   role: Role | null;
   /** "bar" shows only the primary action (mobile bottom bar). */
   layout?: "card" | "bar";
 }
 
+/** Why a tenant cannot apply right now, or null when the room can take an application. */
+function applyBlockedReason(room: RoomDetail): string | null {
+  if (room.availableNow) return null;
+  return room.nextAvailableDate
+    ? `Available from ${formatDate(room.nextAvailableDate)}`
+    : "Fully occupied";
+}
+
 /**
- * Guests go to login and come back here. TENANT buttons stay disabled until the apply and
- * viewing dialogs of specs 08 and 07 exist. Other roles manage rooms from their dashboard.
+ * Guests go to login and come back here. A TENANT can apply while the room is available now;
+ * the viewing button stays disabled until spec 07 exists. Other roles manage rooms from their dashboard.
  */
-export function RoomCta({ roomId, role, layout = "card" }: RoomCtaProps) {
+export function RoomCta({ room, role, layout = "card" }: RoomCtaProps) {
   const compact = layout === "bar";
+  const roomId = room.id;
 
   if (role === null) {
     const loginHref = `/login?redirectTo=${encodeURIComponent(`/rooms/${roomId}`)}`;
@@ -36,11 +48,25 @@ export function RoomCta({ roomId, role, layout = "card" }: RoomCtaProps) {
   }
 
   if (role === "TENANT") {
+    const blocked = applyBlockedReason(room);
+    const reasonId = `apply-reason-${layout}`;
     return (
       <div className={compact ? "" : "flex flex-col gap-2"}>
-        <Button size="lg" className="w-full" disabled>
-          Apply
-        </Button>
+        {blocked ? (
+          <>
+            <Button size="lg" className="w-full" disabled aria-describedby={reasonId}>
+              Apply
+            </Button>
+            <p
+              id={reasonId}
+              className={compact ? "sr-only" : "text-center text-sm text-muted-foreground"}
+            >
+              {blocked}
+            </p>
+          </>
+        ) : (
+          <ApplyDialog room={room} className="w-full" />
+        )}
         {compact ? null : (
           <Button size="lg" variant="outline" className="w-full" disabled>
             Request a viewing
