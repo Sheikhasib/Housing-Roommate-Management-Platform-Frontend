@@ -17,6 +17,24 @@ export const ApplyForRoomZodSchema = z.object({
 
 export type ApplyPayload = z.infer<typeof ApplyForRoomZodSchema>;
 
+/** Mirrors the backend `ReviewApplicationZodSchema` (spec 09), same messages. */
+export const ReviewApplicationZodSchema = z
+  .object({
+    status: z.enum(["APPROVED", "REJECTED"], "Status must be APPROVED or REJECTED"),
+    rejectionReason: z.string("Not a string.").optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.status === "REJECTED" && !data.rejectionReason) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["rejectionReason"],
+        message: "Rejection reason is required when rejecting an application",
+      });
+    }
+  });
+
+export type ReviewPayload = z.infer<typeof ReviewApplicationZodSchema>;
+
 export interface ApplyFormValues {
   moveInDate: string;
   leaseMonths: string;
