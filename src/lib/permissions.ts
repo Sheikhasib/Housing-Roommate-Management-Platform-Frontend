@@ -28,6 +28,8 @@ export const PERMISSIONS = {
   "payments.view": OWNER_ONLY,
   "payments.refund": OWNER_ONLY,
   "ownerVerification.manage": OWNER_ONLY,
+  // Admin area: role changes belong to SUPER_ADMIN only
+  "users.changeRole": ["SUPER_ADMIN"],
   // Analytics: each side sees its own version
   "analytics.owner": OWNER_ONLY,
   "analytics.manager": ["PROPERTY_MANAGER"],

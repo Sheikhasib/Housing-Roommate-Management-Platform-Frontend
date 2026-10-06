@@ -21,6 +21,10 @@ interface ConfirmDialogProps {
   confirmLabel?: string;
   cancelLabel?: string;
   destructive?: boolean;
+  /** Extra content under the description, such as an optional reason field. */
+  children?: ReactNode;
+  /** Disables the confirm button, for example until a required choice is made. */
+  confirmDisabled?: boolean;
   /** May be async. The dialog stays open and shows a spinner until it settles, then closes. */
   onConfirm: () => void | Promise<void>;
   /** Uncontrolled use: the element that opens the dialog. */
@@ -36,6 +40,8 @@ export function ConfirmDialog({
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
   destructive = false,
+  children,
+  confirmDisabled = false,
   onConfirm,
   trigger,
   open,
@@ -72,12 +78,13 @@ export function ConfirmDialog({
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
+        {children}
         <AlertDialogFooter>
           <AlertDialogCancel disabled={pending}>{cancelLabel}</AlertDialogCancel>
           <Button
             variant={destructive ? "destructive" : "default"}
             onClick={handleConfirm}
-            disabled={pending}
+            disabled={pending || confirmDisabled}
           >
             {pending ? <Loader2 className="animate-spin" aria-hidden="true" /> : null}
             {confirmLabel}

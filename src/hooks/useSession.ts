@@ -7,6 +7,7 @@ import { logoutAction } from "@/lib/auth/actions";
 import type { Role } from "@/validation/enums";
 
 export interface SessionUser {
+  id: string;
   name: string;
   email: string;
   role: Role;
@@ -32,7 +33,7 @@ export function useSession(): Session {
   }
 
   const user: SessionUser | null = data
-    ? { name: data.name, email: data.email, role: data.role, avatarUrl: data.imageUrl || null }
+    ? { id: data.id, name: data.name, email: data.email, role: data.role, avatarUrl: data.imageUrl || null }
     : null;
 
   return {
