@@ -21,6 +21,7 @@ export const PERMISSIONS = {
   "leases.view": OWNER_SIDE,
   // Owner only
   "properties.createDelete": OWNER_ONLY,
+  "units.manage": OWNER_ONLY,
   "rooms.createDelete": OWNER_ONLY,
   "managers.assign": OWNER_ONLY,
   "leases.terminate": OWNER_ONLY,

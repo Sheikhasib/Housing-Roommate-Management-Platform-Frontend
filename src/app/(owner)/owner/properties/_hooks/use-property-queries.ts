@@ -1,17 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { ApiError } from "@/lib/api/apiError";
 import {
+  createUnit,
+  deleteUnit,
   getOwnedProperties,
   getPropertyDetail,
   getPropertyManagers,
+  updateUnit,
   type OwnedPropertiesQuery,
 } from "@/lib/api/ownerProperty";
 import type { PropertyDetail } from "@/types/property";
+import type { CreateUnitPayload } from "@/validation/property";
 
 export const propertiesKey = (params?: unknown) =>
   params === undefined ? (["properties", "mine"] as const) : (["properties", "mine", params] as const);
@@ -72,4 +76,30 @@ export function useRefreshProperty(propertyId: string) {
     void queryClient.invalidateQueries({ queryKey: propertyKey(propertyId) });
     void queryClient.invalidateQueries({ queryKey: propertiesKey() });
   };
+}
+
+/** Unit writes: each one refreshes this property (its units come with it) and the lists. */
+export function useCreateUnit(propertyId: string) {
+  const refresh = useRefreshProperty(propertyId);
+  return useMutation({
+    mutationFn: (body: CreateUnitPayload) => createUnit(propertyId, body),
+    onSuccess: refresh,
+  });
+}
+
+export function useUpdateUnit(propertyId: string) {
+  const refresh = useRefreshProperty(propertyId);
+  return useMutation({
+    mutationFn: ({ unitId, body }: { unitId: string; body: Record<string, unknown> }) =>
+      updateUnit(unitId, body),
+    onSuccess: refresh,
+  });
+}
+
+export function useDeleteUnit(propertyId: string) {
+  const refresh = useRefreshProperty(propertyId);
+  return useMutation({
+    mutationFn: (unitId: string) => deleteUnit(unitId),
+    onSuccess: refresh,
+  });
 }

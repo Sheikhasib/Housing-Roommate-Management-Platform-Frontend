@@ -25,8 +25,13 @@ interface FileUploaderProps<T> {
   kind: "image" | "document";
   /** Exact backend field name: profileImage, document, documents, images or image. */
   fieldName: string;
-  /** Path relative to /api/v1, e.g. "/users/me". */
-  url: string;
+  /**
+   * Path relative to /api/v1, e.g. "/users/me". Leave it out to only collect files: there is no
+   * upload button and `onFilesChange` hands the picked files to the parent (create wizard).
+   */
+  url?: string;
+  /** Called with the valid picked files whenever the pick changes. */
+  onFilesChange?: (files: File[]) => void;
   method?: "POST" | "PATCH" | "PUT";
   maxFiles?: number;
   label: string;
@@ -46,6 +51,7 @@ export function FileUploader<T = unknown>({
   kind,
   fieldName,
   url,
+  onFilesChange,
   method = "POST",
   maxFiles = 1,
   label,
@@ -121,13 +127,16 @@ export function FileUploader<T = unknown>({
 
     setPicked(next);
     setMessages(problems);
+    onFilesChange?.(next.map((item) => item.file));
   };
 
   const removeFile = (id: string) => {
     const target = picked.find((item) => item.id === id);
     if (target?.previewUrl) URL.revokeObjectURL(target.previewUrl);
-    setPicked(picked.filter((item) => item.id !== id));
+    const remaining = picked.filter((item) => item.id !== id);
+    setPicked(remaining);
     setMessages([]);
+    onFilesChange?.(remaining.map((item) => item.file));
   };
 
   const handleDrop = (event: DragEvent<HTMLButtonElement>) => {
@@ -138,7 +147,7 @@ export function FileUploader<T = unknown>({
   };
 
   const upload = async () => {
-    if (picked.length === 0) return;
+    if (picked.length === 0 || !url) return;
     const formData = new FormData();
     picked.forEach((item) => formData.append(fieldName, item.file));
 
@@ -262,7 +271,7 @@ export function FileUploader<T = unknown>({
         </div>
       ) : null}
 
-      {picked.length > 0 ? (
+      {picked.length > 0 && url ? (
         <div className="flex justify-end">
           <Button type="button" onClick={upload} disabled={busy}>
             {uploading ? <Loader2 className="animate-spin" aria-hidden="true" /> : null}

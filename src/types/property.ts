@@ -35,6 +35,18 @@ export interface OwnedPropertySummary {
   _count: { rooms: number };
 }
 
+/**
+ * One non-deleted unit. The `units` array is confirmed on the live detail response, but the demo
+ * data has none, so the item fields follow the documented `Unit` model (backend spec 05).
+ */
+export interface PropertyUnit {
+  id: string;
+  label: string;
+  description: string | null;
+  floor: number | null;
+  propertyId: string;
+}
+
 /** `GET /property/:propertyId` for the owning OWNER or an assigned PROPERTY_MANAGER (full view). */
 export interface PropertyDetail {
   id: string;
@@ -52,6 +64,7 @@ export interface PropertyDetail {
   images: CloudinaryImage[] | null;
   houseRules: string | null;
   createdAt: string;
+  units: PropertyUnit[];
 }
 
 /** One row of `GET /property/:propertyId/managers`. */
