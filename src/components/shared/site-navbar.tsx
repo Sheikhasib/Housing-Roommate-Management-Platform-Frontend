@@ -79,6 +79,7 @@ export function SiteNavbar() {
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
+          aria-label={`${APP_NAME}, go to the home page`}
           className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg text-base font-semibold text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
         >
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">

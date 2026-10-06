@@ -10,6 +10,7 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
       <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link
           href="/"
+          aria-label={`${APP_NAME}, go to the home page`}
           className="flex items-center gap-2 rounded-lg text-base font-semibold text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
         >
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">

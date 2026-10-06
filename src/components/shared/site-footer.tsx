@@ -26,7 +26,11 @@ export function SiteFooter() {
     <footer className="border-t border-border bg-card">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
         <div className="space-y-4">
-          <Link href="/" className="flex items-center gap-2 text-base font-semibold text-foreground">
+          <Link
+            href="/"
+            aria-label={`${APP_NAME}, go to the home page`}
+            className="flex w-fit items-center gap-2 rounded-lg text-base font-semibold text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
             <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Building2 className="size-4" aria-hidden />
             </span>

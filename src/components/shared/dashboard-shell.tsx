@@ -7,7 +7,7 @@ import { DashboardTopbar } from "@/components/shared/dashboard-topbar";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { useSession } from "@/hooks/useSession";
 import { AREA_LABELS, getNavItems } from "@/lib/nav-config";
-import { AREA_HOME, ROLE_AREA, ROLE_LABELS, type Area } from "@/lib/permissions";
+import { ROLE_AREA, ROLE_LABELS, type Area } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
 interface DashboardShellProps {
@@ -23,7 +23,6 @@ export function DashboardShell({ area, children }: DashboardShellProps) {
 
   const resolvedArea = area ?? (role ? ROLE_AREA[role] : null);
   const items = resolvedArea ? getNavItems(resolvedArea, role) : [];
-  const homeHref = resolvedArea ? AREA_HOME[resolvedArea] : "/";
   const roleLabel = role ? ROLE_LABELS[role] : resolvedArea ? AREA_LABELS[resolvedArea] : null;
 
   return (
@@ -43,7 +42,6 @@ export function DashboardShell({ area, children }: DashboardShellProps) {
       >
         <DashboardSidebar
           items={items}
-          homeHref={homeHref}
           roleLabel={roleLabel}
           collapsed={collapsed}
         />
@@ -58,7 +56,6 @@ export function DashboardShell({ area, children }: DashboardShellProps) {
           <SheetDescription className="sr-only">Pages in your dashboard</SheetDescription>
           <DashboardSidebar
             items={items}
-            homeHref={homeHref}
             roleLabel={roleLabel}
             onNavigate={() => setMobileOpen(false)}
           />

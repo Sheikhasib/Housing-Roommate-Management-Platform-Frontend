@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 
 interface DashboardSidebarProps {
   items: readonly NavItem[];
-  homeHref: string;
   /** Neutral chip under the wordmark, for example "Owner". */
   roleLabel: string | null;
   /** Icon-only mode (desktop only). */
@@ -21,7 +20,6 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({
   items,
-  homeHref,
   roleLabel,
   collapsed = false,
   onNavigate,
@@ -37,9 +35,9 @@ export function DashboardSidebar({
         )}
       >
         <Link
-          href={homeHref}
+          href="/"
           onClick={onNavigate}
-          aria-label={collapsed ? `${APP_NAME} home` : undefined}
+          aria-label={`${APP_NAME}, go to the home page`}
           className="flex min-w-0 items-center gap-2 rounded-lg text-base font-semibold text-sidebar-foreground outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring/50"
         >
           <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
