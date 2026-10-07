@@ -31,6 +31,19 @@ export interface ViewingRoom {
   property: ViewingRoomProperty;
 }
 
+/** One item of `GET /viewing/owner-requests`. */
+export interface OwnerViewing extends Viewing {
+  tenantProfile: {
+    id: string;
+    name: string;
+    email: string;
+    contactNumber: string | null;
+    occupation: string | null;
+    user: { imageUrl: string | null } | null;
+  } | null;
+  room: { id: string; name: string; monthlyRent: string } | null;
+}
+
 /** One item of `GET /viewing/my-requests`. */
 export interface TenantViewing extends Viewing {
   room: ViewingRoom;

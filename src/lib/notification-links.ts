@@ -20,9 +20,9 @@ const TENANT_BY_TYPE: Partial<Record<NotificationType, string>> = {
   MAINTENANCE: "/dashboard/maintenance",
 };
 
-// TODO(part 7b): add VIEWING: "/owner/viewings" once that page exists.
 const OWNER_BY_TYPE: Partial<Record<NotificationType, string>> = {
   APPLICATION: "/owner/applications",
+  VIEWING: "/owner/viewings",
   LEASE: "/owner/leases",
   INVOICE: "/owner/invoices",
   MAINTENANCE: "/owner/maintenance",

@@ -14,7 +14,6 @@ export function WorkloadCards({ data }: { data: RoleOverviewData }) {
         Workload
       </h2>
       <div className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Viewings have no page yet, so that card shows the number without a link. */}
         <LinkedCard href="/owner/applications?status=PENDING">
           <StatCard
             label="Pending applications"
@@ -23,7 +22,7 @@ export function WorkloadCards({ data }: { data: RoleOverviewData }) {
             hint={stats ? "Waiting for your decision" : UNAVAILABLE}
           />
         </LinkedCard>
-        <LinkedCard>
+        <LinkedCard href="/owner/viewings?status=PENDING">
           <StatCard
             label="Pending viewings"
             value={stats ? stats.pendingViewings : "—"}
