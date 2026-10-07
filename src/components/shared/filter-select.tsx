@@ -24,6 +24,8 @@ interface FilterSelectProps {
   allLabel?: string;
   /** Value used when the URL has none (for example PENDING). */
   defaultValue?: string;
+  /** Shown while nothing is chosen (only when there is no `allLabel` and no default). */
+  placeholder?: string;
   className?: string;
 }
 
@@ -34,6 +36,7 @@ export function FilterSelect({
   options,
   allLabel,
   defaultValue,
+  placeholder,
   className,
 }: FilterSelectProps) {
   const id = useId();
@@ -52,7 +55,7 @@ export function FilterSelect({
         }}
       >
         <SelectTrigger id={id} className="w-full">
-          <SelectValue />
+          <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
           {allLabel ? <SelectItem value={ALL}>{allLabel}</SelectItem> : null}
