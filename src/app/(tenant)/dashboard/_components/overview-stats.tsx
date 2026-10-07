@@ -62,12 +62,14 @@ export function OverviewStats({ stats, errorMessage }: OverviewStatsProps) {
             hint={stats ? `${stats.outstandingInvoices} unpaid invoices` : UNAVAILABLE}
           />
         </LinkedCard>
-        <StatCard
-          label="Open maintenance"
-          value={stats ? stats.openMaintenance : "—"}
-          icon={Wrench}
-          hint={stats ? "Requests not resolved or closed yet" : UNAVAILABLE}
-        />
+        <LinkedCard href="/dashboard/maintenance">
+          <StatCard
+            label="Open maintenance"
+            value={stats ? stats.openMaintenance : "—"}
+            icon={Wrench}
+            hint={stats ? "Requests not resolved or closed yet" : UNAVAILABLE}
+          />
+        </LinkedCard>
       </div>
     </section>
   );
