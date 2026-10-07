@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { PaymentResultCard } from "@/components/shared/payment-result-card";
 import { Button } from "@/components/ui/button";
+import { findLeaseIdForApplication } from "@/lib/api/leaseServer";
 import { resolvePayment } from "@/lib/api/paymentServer";
 import {
   nextStepHref,
@@ -49,7 +50,13 @@ export default async function PaymentSuccessPage({ searchParams }: PageProps<"/p
   const { payment } = lookup;
 
   if (payment.status === "PAID") {
-    const next = nextStepHref(payment.purpose, payment.application?.id ?? hints.ref);
+    const applicationId = payment.application?.id ?? hints.ref;
+    // The lease id lives on the application; when it cannot be read the link falls back to the application.
+    const leaseId =
+      payment.purpose === "DEPOSIT" && applicationId
+        ? await findLeaseIdForApplication(applicationId)
+        : null;
+    const next = nextStepHref(payment.purpose, applicationId, leaseId);
     return (
       <PaymentResultCard
         tone="success"

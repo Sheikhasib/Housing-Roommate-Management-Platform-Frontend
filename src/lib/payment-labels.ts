@@ -32,14 +32,21 @@ export function retryHref(purpose: PaymentPurpose | undefined, applicationId?: s
   return "/dashboard/invoices";
 }
 
-// switch to /dashboard/leases and /dashboard/payments when parts 09 and 10b ship
+// switch to /dashboard/payments when part 10b ships (the lease pages exist since part 9a)
 export const PAYMENTS_HREF = "/dashboard/applications";
 
-/** The next step after a PAID payment. A deposit goes to its application, which already shows the lease status. */
+/**
+ * The next step after a PAID payment. A deposit goes to its lease when the lease id is known,
+ * otherwise to its application, which also shows the lease status.
+ */
 export function nextStepHref(
   purpose: PaymentPurpose,
   applicationId?: string,
+  leaseId?: string | null,
 ): { href: string; label: string } {
+  if (purpose === "DEPOSIT" && leaseId) {
+    return { href: `/dashboard/leases/${encodeURIComponent(leaseId)}`, label: "View your lease" };
+  }
   if (purpose === "DEPOSIT") {
     return applicationId
       ? { href: `/dashboard/applications/${encodeURIComponent(applicationId)}`, label: "View your application" }
