@@ -31,6 +31,11 @@ export interface Payment {
   /** Reported by the provider as a string. */
   paidAt: string | null;
   createdAt: string;
+  /** Refund fields: set only after a refund started or finished (deposit refunds). Money is a string. */
+  refundTrxId?: string | null;
+  refundAmount?: string | null;
+  refundReason?: string | null;
+  refundAt?: string | null;
   application?: {
     id: string;
     status?: ApplicationStatus;
@@ -39,6 +44,7 @@ export interface Payment {
   invoice?: {
     id: string;
     type?: InvoiceType;
+    amount?: string;
     dueDate?: string;
   } | null;
 }

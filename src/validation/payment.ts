@@ -13,3 +13,8 @@ export const PayGatewayZodSchema = z.object({
 export const StartDepositZodSchema = PayGatewayZodSchema.extend({
   applicationId: z.string().min(1, "applicationId is required"),
 });
+
+/** Mirrors the backend `PayInvoiceZodSchema` (spec 10): only the gateway is sent, the backend decides the amount. */
+export const PayInvoiceZodSchema = PayGatewayZodSchema.extend({
+  invoiceId: z.string().min(1, "invoiceId is required"),
+});
