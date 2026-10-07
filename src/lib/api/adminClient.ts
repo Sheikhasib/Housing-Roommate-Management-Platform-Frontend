@@ -6,6 +6,7 @@ import type {
   AuditLogRow,
   OwnerVerificationRow,
   PendingRefundRow,
+  PendingSettlementRow,
   TenantVerificationRow,
 } from "@/types/admin";
 import type { ApiMeta, ApiSuccess } from "@/types/api";
@@ -132,6 +133,23 @@ export interface ResolveRefundBody {
 
 export function resolvePendingRefund(paymentId: string, body: ResolveRefundBody) {
   return apiClient<ApiSuccess<unknown>>(`/admin/payments/pending-refunds/${paymentId}/resolve`, {
+    method: "POST",
+    body,
+  });
+}
+
+export function getPendingSettlements(query: { page: number; limit: number }) {
+  return list<PendingSettlementRow>("/admin/payments/pending-settlements", { ...query });
+}
+
+export interface ResolveSettlementBody {
+  outcome: "SETTLED" | "NOT_SETTLED";
+  providerTrxId?: string;
+  note?: string;
+}
+
+export function resolvePendingSettlement(paymentId: string, body: ResolveSettlementBody) {
+  return apiClient<ApiSuccess<unknown>>(`/admin/payments/pending-settlements/${paymentId}/resolve`, {
     method: "POST",
     body,
   });

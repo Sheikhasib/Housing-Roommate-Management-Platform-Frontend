@@ -15,7 +15,7 @@ export default function AdminPaymentsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Payments"
-        description="Every payment on the platform, and refunds that are waiting for an admin to confirm the outcome."
+        description="Every payment on the platform, and refunds and payments that are waiting for an admin to confirm the outcome."
       />
       <Suspense fallback={<PaymentsSkeleton />}>
         <PaymentsTabs />

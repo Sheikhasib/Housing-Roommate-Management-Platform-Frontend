@@ -132,6 +132,9 @@ export interface PendingRefundRow {
   updatedAt: string;
 }
 
+/** A row of `GET /admin/payments/pending-settlements`: a stale PROCESSING payment. */
+export type PendingSettlementRow = PendingRefundRow;
+
 /** A row of `GET /admin/audit-logs`. `before` and `after` are free-form JSON. */
 export interface AuditLogRow {
   id: string;

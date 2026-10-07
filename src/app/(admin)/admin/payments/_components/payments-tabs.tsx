@@ -4,8 +4,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUrlState } from "@/hooks/useUrlState";
 import { AllPayments } from "./all-payments";
 import { PendingRefunds } from "./pending-refunds";
+import { PendingSettlements } from "./pending-settlements";
 
-const TABS = ["all", "refunds"] as const;
+const TABS = ["all", "refunds", "settlements"] as const;
 type PaymentsTab = (typeof TABS)[number];
 
 function isTab(value: string): value is PaymentsTab {
@@ -29,12 +30,18 @@ export function PaymentsTabs() {
         <TabsTrigger value="refunds" className="min-h-9 flex-1 px-4 sm:flex-none">
           Pending refunds
         </TabsTrigger>
+        <TabsTrigger value="settlements" className="min-h-9 flex-1 px-4 sm:flex-none">
+          Pending settlements
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="all">
         <AllPayments />
       </TabsContent>
       <TabsContent value="refunds">
         <PendingRefunds />
+      </TabsContent>
+      <TabsContent value="settlements">
+        <PendingSettlements />
       </TabsContent>
     </Tabs>
   );

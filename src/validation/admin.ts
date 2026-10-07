@@ -20,6 +20,12 @@ export const ResolvePendingRefundZodSchema = z.object({
   note: z.string("Not a string.").optional(),
 });
 
+export const ResolvePendingSettlementZodSchema = z.object({
+  outcome: z.enum(["SETTLED", "NOT_SETTLED"], "Outcome must be SETTLED or NOT_SETTLED"),
+  providerTrxId: z.string("Not a string.").optional(),
+  note: z.string("Not a string.").optional(),
+});
+
 export const ReviewTenantVerificationZodSchema = z
   .object({
     verificationStatus: z.enum(["APPROVED", "REJECTED"], "verificationStatus must be APPROVED or REJECTED"),

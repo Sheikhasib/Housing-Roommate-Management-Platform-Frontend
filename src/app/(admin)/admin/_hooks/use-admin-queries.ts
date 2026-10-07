@@ -13,6 +13,7 @@ import {
   getAuditLogs,
   getOwnerVerifications,
   getPendingRefunds,
+  getPendingSettlements,
   getTenantVerifications,
   type AuditLogsQuery,
   type PaymentsQuery,
@@ -27,6 +28,7 @@ export const OWNER_VERIFICATIONS_KEY = ["admin", "owner-verifications"] as const
 export const ADMIN_PROPERTIES_KEY = ["admin", "properties"] as const;
 export const ADMIN_PAYMENTS_KEY = ["admin", "payments"] as const;
 export const PENDING_REFUNDS_KEY = ["admin", "pending-refunds"] as const;
+export const PENDING_SETTLEMENTS_KEY = ["admin", "pending-settlements"] as const;
 export const AUDIT_LOGS_KEY = ["admin", "audit-logs"] as const;
 
 const LIST_OPTIONS = { retry: false, refetchOnWindowFocus: false, placeholderData: keepPreviousData } as const;
@@ -97,6 +99,16 @@ export function usePendingRefunds(query: { page: number; limit: number }) {
   const result = useQuery({
     queryKey: [...PENDING_REFUNDS_KEY, query],
     queryFn: () => getPendingRefunds(query),
+    ...LIST_OPTIONS,
+  });
+  useErrorToast(result.error);
+  return result;
+}
+
+export function usePendingSettlements(query: { page: number; limit: number }) {
+  const result = useQuery({
+    queryKey: [...PENDING_SETTLEMENTS_KEY, query],
+    queryFn: () => getPendingSettlements(query),
     ...LIST_OPTIONS,
   });
   useErrorToast(result.error);
