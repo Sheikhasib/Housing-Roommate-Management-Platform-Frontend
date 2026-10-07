@@ -91,7 +91,7 @@ export function ReviewApplication({
     <Can permission="applications.review">
       <ConfirmDialog
         title="Approve this application?"
-        description={`${tenantName} is told by email and in the app that their application for ${roomName} was approved, and can then pay the booking deposit. A lease is created only when that payment succeeds. The backend checks that the room still has a free bed.`}
+        description={`${tenantName} is told by email and in the app that their application for ${roomName} was approved, and can then pay the booking deposit. A lease is created only when that payment succeeds. When you approve, the room is checked for a free bed.`}
         confirmLabel="Approve application"
         onConfirm={approve}
         trigger={

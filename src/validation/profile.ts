@@ -19,16 +19,16 @@ const genderEnum = z.enum(["MALE", "FEMALE", "OTHER"], "Invalid gender.");
 
 export const UpdateTenantProfileZodSchema = z
   .object({
-    contactNumber: z.string("Not a string.").optional(),
+    contactNumber: z.string("Please enter a valid value.").optional(),
     gender: genderEnum.optional(),
     dateOfBirth: z
       .string("Not a string.")
       .datetime({ offset: true, message: "dateOfBirth must be a valid date" })
       .optional()
       .or(z.date().optional()),
-    occupation: z.string("Not a string.").optional(),
-    bio: z.string("Not a string.").max(BIO_MAX, "Bio must be at most 500 characters long").optional(),
-    preferredCity: z.string("Not a string.").optional(),
+    occupation: z.string("Please enter a valid value.").optional(),
+    bio: z.string("Please enter a valid value.").max(BIO_MAX, "Bio must be at most 500 characters long").optional(),
+    preferredCity: z.string("Please enter a valid value.").optional(),
     monthlyBudgetMax: z
       .number("Budget must be a number.")
       .int("Budget must be an integer.")
@@ -57,14 +57,14 @@ export const UpdateOwnerProfileZodSchema = z
       .string("Not a string.")
       .min(2, "Company name must be at least 2 characters long")
       .optional(),
-    address: z.string("Not a string.").optional(),
+    address: z.string("Please enter a valid value.").optional(),
   })
   .strict();
 
 export const UpdateManagerProfileZodSchema = z
   .object({
-    contactNumber: z.string("Not a string.").optional(),
-    bio: z.string("Not a string.").max(BIO_MAX, "Bio must be at most 500 characters long").optional(),
+    contactNumber: z.string("Please enter a valid value.").optional(),
+    bio: z.string("Please enter a valid value.").max(BIO_MAX, "Bio must be at most 500 characters long").optional(),
   })
   .strict();
 

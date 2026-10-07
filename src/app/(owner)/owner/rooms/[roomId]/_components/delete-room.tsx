@@ -33,7 +33,7 @@ export function DeleteRoom({ roomId, name }: { roomId: string; name: string }) {
     <ConfirmDialog
       destructive
       title={`Delete ${name}?`}
-      description="The room is deleted and set to unpublished, and it no longer appears in your rooms list. If the room has an active lease, the backend refuses and says why."
+      description="The room is deleted and set to unpublished, and it no longer appears in your rooms list. A room with an active lease cannot be deleted."
       confirmLabel="Delete room"
       onConfirm={confirmDelete}
       trigger={

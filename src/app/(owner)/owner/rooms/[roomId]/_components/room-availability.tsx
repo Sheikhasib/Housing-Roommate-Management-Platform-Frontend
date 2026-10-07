@@ -112,7 +112,7 @@ export function RoomAvailability({ room }: { room: OwnerRoomDetail }) {
         <CardHeader>
           <CardTitle className="text-lg font-semibold">Status and availability date</CardTitle>
           <CardDescription>
-            The backend refuses to mark a fully leased room as available and tells you why.
+            A room that is fully occupied cannot be published.
           </CardDescription>
         </CardHeader>
         <CardContent>
