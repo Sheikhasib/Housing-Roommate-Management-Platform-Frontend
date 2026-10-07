@@ -14,7 +14,7 @@ export function WorkloadCards({ data }: { data: RoleOverviewData }) {
         Workload
       </h2>
       <div className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Only the applications page exists so far; viewings and maintenance show the number without a link. */}
+        {/* Viewings have no page yet, so that card shows the number without a link. */}
         <LinkedCard href="/owner/applications?status=PENDING">
           <StatCard
             label="Pending applications"
@@ -31,7 +31,8 @@ export function WorkloadCards({ data }: { data: RoleOverviewData }) {
             hint={stats ? "Viewing requests waiting for an answer" : UNAVAILABLE}
           />
         </LinkedCard>
-        <LinkedCard>
+        {/* No filter: the count covers Open, Assigned and In progress. */}
+        <LinkedCard href="/owner/maintenance">
           <StatCard
             label="Open maintenance"
             value={stats ? stats.openMaintenance : "—"}

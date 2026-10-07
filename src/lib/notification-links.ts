@@ -10,18 +10,20 @@ function readId(data: NotificationRow["data"], key: string): string | null {
   return typeof value === "string" && value.trim() ? encodeURIComponent(value.trim()) : null;
 }
 
-// Only pages that exist in the app are listed. Viewings, maintenance and roommates have no page yet.
+// Only pages that exist in the app are listed. Viewings and roommates have no page yet.
 const TENANT_BY_TYPE: Partial<Record<NotificationType, string>> = {
   APPLICATION: "/dashboard/applications",
   LEASE: "/dashboard/leases",
   INVOICE: "/dashboard/invoices",
   PAYMENT: "/dashboard/payments",
+  MAINTENANCE: "/dashboard/maintenance",
 };
 
 const OWNER_BY_TYPE: Partial<Record<NotificationType, string>> = {
   APPLICATION: "/owner/applications",
   LEASE: "/owner/leases",
   INVOICE: "/owner/invoices",
+  MAINTENANCE: "/owner/maintenance",
 };
 
 // Admins get a link only when the type name points to exactly one admin page.
