@@ -39,12 +39,13 @@ export function useLease(leaseId: string, initialData: TenantLease) {
   });
 }
 
-/** After a change: refetch this lease and the list that shows it. */
+/** After a change: refetch this lease and the lists that show it (tenant and owner side). */
 export function useRefreshLeases(leaseId?: string) {
   const queryClient = useQueryClient();
   return () => {
     if (leaseId) void queryClient.invalidateQueries({ queryKey: leaseKey(leaseId) });
-    void queryClient.invalidateQueries({ queryKey: leasesKey() });
+    void queryClient.invalidateQueries({ queryKey: ["lease", "owner"] });
+    void queryClient.invalidateQueries({ queryKey: ["leases"] });
   };
 }
 

@@ -1,4 +1,5 @@
 import type { ApplicationRoom } from "@/types/application";
+import type { ApplicantSummary } from "@/types/owner-application";
 import type {
   ApplicationStatus,
   LeaseStatus,
@@ -13,6 +14,9 @@ export interface LeaseDepositPayment {
   amount: string;
   paidAt?: string | null;
   refundTrxId?: string | null;
+  refundAmount?: string | null;
+  refundReason?: string | null;
+  refundAt?: string | null;
 }
 
 export interface LeaseApplication {
@@ -38,6 +42,25 @@ export interface TenantLease {
   createdAt: string;
   room: ApplicationRoom;
   application?: LeaseApplication | null;
+}
+
+/** One item of `GET /lease/owner-leases` (backend spec 10). The room has no property here. */
+export interface OwnerLeaseRow {
+  id: string;
+  status: LeaseStatus;
+  startDate: string;
+  endDate: string;
+  monthlyRent: string;
+  tenantProfile: ApplicantSummary;
+  room: { id: string; name: string; monthlyRent: string };
+}
+
+/**
+ * Body of `GET /lease/:leaseId` as the owner or an assigned manager reads it. Manager responses
+ * have no `application.payment` (spec 17 money isolation), so every payment read is optional.
+ */
+export interface OwnerLeaseDetail extends TenantLease {
+  tenantProfile: ApplicantSummary;
 }
 
 /** `data` of `POST /lease/:leaseId/terminate`. */

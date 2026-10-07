@@ -20,7 +20,13 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toFormFailure } from "@/lib/api/formFailure";
-import { depositRefundNotice, REFUND_RESULT_LINE, TERMINATION_EFFECTS } from "@/lib/lease-refund";
+import {
+  depositRefundNotice,
+  OWNER_TERMINATION_EFFECTS,
+  ownerDepositRefundNotice,
+  REFUND_RESULT_LINE,
+  TERMINATION_EFFECTS,
+} from "@/lib/lease-refund";
 import type { TenantLease, TerminateLeaseResult } from "@/types/lease";
 import { TerminateLeaseZodSchema } from "@/validation/lease";
 import { useTerminateLease } from "../../_hooks/use-lease-queries";
@@ -61,13 +67,25 @@ export function TerminationResultPanel({ outcome }: { outcome: TerminationOutcom
 interface TerminateLeaseProps {
   lease: TenantLease;
   onTerminated: (outcome: TerminationOutcome) => void;
+  /** Whose point of view the wording and the permission follow. Defaults to the tenant. */
+  viewer?: "tenant" | "owner";
+  /** The tenant's name, used in the owner wording. */
+  tenantName?: string;
 }
 
 /**
  * Step 1: a form dialog with the required reason and the refund explanation.
  * Step 2: a final confirmation, because ending a lease cannot be undone and may involve money.
  */
-export function TerminateLease({ lease, onTerminated }: TerminateLeaseProps) {
+export function TerminateLease({
+  lease,
+  onTerminated,
+  viewer = "tenant",
+  tenantName,
+}: TerminateLeaseProps) {
+  const isOwner = viewer === "owner";
+  const refundNotice = isOwner ? ownerDepositRefundNotice : depositRefundNotice;
+  const effects = isOwner ? OWNER_TERMINATION_EFFECTS : TERMINATION_EFFECTS;
   const mutation = useTerminateLease(lease.id);
   const [formOpen, setFormOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -118,7 +136,7 @@ export function TerminateLease({ lease, onTerminated }: TerminateLeaseProps) {
   };
 
   return (
-    <Can permission="leases.terminateOwn">
+    <Can permission={isOwner ? "leases.terminate" : "leases.terminateOwn"}>
       {lease.status === "ACTIVE" ? (
         <Button type="button" variant="outline" className="text-error-text" onClick={openForm}>
           <Power aria-hidden="true" />
@@ -157,7 +175,9 @@ export function TerminateLease({ lease, onTerminated }: TerminateLeaseProps) {
             <DialogHeader>
               <DialogTitle>Terminate this lease?</DialogTitle>
               <DialogDescription>
-                {`Tell us why you are ending your lease for ${lease.room.name}. You confirm in the next step.`}
+                {isOwner
+                  ? `Tell us why you are ending the lease${tenantName ? ` of ${tenantName}` : ""} for ${lease.room.name}. You confirm in the next step.`
+                  : `Tell us why you are ending your lease for ${lease.room.name}. You confirm in the next step.`}
               </DialogDescription>
             </DialogHeader>
 
@@ -190,8 +210,8 @@ export function TerminateLease({ lease, onTerminated }: TerminateLeaseProps) {
             </form.Field>
 
             <div className="space-y-2 rounded-lg border border-border bg-muted p-3 text-sm">
-              <p className="font-medium text-foreground">About your deposit</p>
-              <p className="text-muted-foreground">{depositRefundNotice(lease, now)}</p>
+              <p className="font-medium text-foreground">{isOwner ? "About the deposit" : "About your deposit"}</p>
+              <p className="text-muted-foreground">{refundNotice(lease, now)}</p>
               <p className="text-foreground">{REFUND_RESULT_LINE}</p>
             </div>
 
@@ -218,7 +238,7 @@ export function TerminateLease({ lease, onTerminated }: TerminateLeaseProps) {
           }
         }}
         title="Terminate this lease now?"
-        description={`${TERMINATION_EFFECTS} ${depositRefundNotice(lease, now)} ${REFUND_RESULT_LINE}`}
+        description={`${effects} ${refundNotice(lease, now)} ${REFUND_RESULT_LINE}`}
         confirmLabel="Terminate lease"
         cancelLabel="Go back"
         destructive
@@ -228,7 +248,7 @@ export function TerminateLease({ lease, onTerminated }: TerminateLeaseProps) {
         {mutation.isPending ? (
           <p className="flex items-center gap-2 text-sm text-muted-foreground" role="status">
             <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-            Ending your lease. A refund request can take a while.
+            {isOwner ? "Ending the lease. A refund request can take a while." : "Ending your lease. A refund request can take a while."}
           </p>
         ) : null}
       </ConfirmDialog>

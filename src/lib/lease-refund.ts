@@ -34,3 +34,33 @@ export function depositRefundNotice(lease: TenantLease, now: number): string {
 /** The consequences the backend lists for every termination (spec 10, termination step 4). */
 export const TERMINATION_EFFECTS =
   "Ending the lease frees your bed, cancels your unpaid and processing invoices and removes any roommate membership. This cannot be undone.";
+
+/** The same deposit rules (specs 10 and 12), worded for the owner who ends the lease. */
+export function ownerDepositRefundNotice(lease: TenantLease, now: number): string {
+  const payment = lease.application?.payment;
+
+  if (!payment) {
+    return "No paid deposit is shown for this lease, so there is nothing to refund.";
+  }
+  if (payment.status === "REFUNDED") {
+    return "The deposit for this lease is already refunded, so no further refund applies.";
+  }
+  if (payment.status === "REFUND_PENDING") {
+    return "A deposit refund for this lease is already in progress.";
+  }
+  if (payment.status !== "PAID") {
+    return "The deposit for this lease is not paid, so there is nothing to refund.";
+  }
+
+  if (new Date(lease.startDate).getTime() <= now) {
+    return "This lease has already started, so the deposit is not refunded.";
+  }
+  if (payment.gateway === "SSLCOMMERZ") {
+    return "The tenant paid the deposit with SSLCommerz. These deposits are not refunded automatically: an admin refunds them after review.";
+  }
+  return "This lease has not started yet, so a refund of the tenant's deposit to the way they paid will be attempted. If the refund cannot be confirmed, an admin will review it.";
+}
+
+/** The consequences the backend lists for every termination, from the owner's side (spec 10, steps 4 and notifications). */
+export const OWNER_TERMINATION_EFFECTS =
+  "Ending the lease frees the bed, cancels the tenant's unpaid and processing invoices and removes any roommate membership. The tenant is notified. This cannot be undone.";
