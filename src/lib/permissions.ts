@@ -33,6 +33,8 @@ export const PERMISSIONS = {
   // Tenant only
   "applications.apply": TENANT_ONLY,
   "applications.cancel": TENANT_ONLY,
+  "viewings.request": TENANT_ONLY,
+  "viewings.cancel": TENANT_ONLY,
   "payments.pay": TENANT_ONLY,
   "maintenance.report": TENANT_ONLY,
   "leases.terminateOwn": TENANT_ONLY,

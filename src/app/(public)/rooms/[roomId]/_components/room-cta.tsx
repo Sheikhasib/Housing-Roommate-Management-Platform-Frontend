@@ -7,6 +7,7 @@ import { getRoleHome } from "@/lib/permissions";
 import type { RoomDetail } from "@/types/room";
 import type { Role } from "@/validation/enums";
 import { ApplyDialog } from "./apply-dialog";
+import { ViewingRequestDialog } from "./viewing-request-dialog";
 
 interface RoomCtaProps {
   room: RoomDetail;
@@ -23,9 +24,14 @@ function applyBlockedReason(room: RoomDetail): string | null {
     : "Fully occupied";
 }
 
+/** A viewing can be requested even when the room is full; only an unpublished room blocks it. */
+function viewingBlockedReason(room: RoomDetail): string | null {
+  return room.isPublished === false ? "This room is not open for viewings right now" : null;
+}
+
 /**
- * Guests go to login and come back here. A TENANT can apply while the room is available now;
- * the viewing button stays disabled until spec 07 exists. Other roles manage rooms from their dashboard.
+ * Guests go to login and come back here. A TENANT can apply while the room is available now and
+ * can request a viewing whenever the room is published. Other roles manage rooms from their dashboard.
  */
 export function RoomCta({ room, role, layout = "card" }: RoomCtaProps) {
   const compact = layout === "bar";
@@ -50,11 +56,40 @@ export function RoomCta({ room, role, layout = "card" }: RoomCtaProps) {
   if (role === "TENANT") {
     const blocked = applyBlockedReason(room);
     const reasonId = `apply-reason-${layout}`;
+    const viewingReasonId = `viewing-reason-${layout}`;
+    const viewingBlocked = viewingBlockedReason(room);
+    const buttonClass = compact ? "h-11 px-4" : "w-full";
+    const viewingButton = viewingBlocked ? (
+      <>
+        <Button
+          size="lg"
+          variant="outline"
+          className={buttonClass}
+          disabled
+          aria-describedby={viewingReasonId}
+        >
+          {compact ? "Viewing" : "Request a viewing"}
+        </Button>
+        <p
+          id={viewingReasonId}
+          className={compact ? "sr-only" : "text-center text-sm text-muted-foreground"}
+        >
+          {viewingBlocked}
+        </p>
+      </>
+    ) : (
+      <ViewingRequestDialog
+        room={room}
+        className={buttonClass}
+        label={compact ? "Viewing" : undefined}
+      />
+    );
     return (
-      <div className={compact ? "" : "flex flex-col gap-2"}>
+      <div className={compact ? "flex items-center gap-2" : "flex flex-col gap-2"}>
+        {compact ? viewingButton : null}
         {blocked ? (
           <>
-            <Button size="lg" className="w-full" disabled aria-describedby={reasonId}>
+            <Button size="lg" className={buttonClass} disabled aria-describedby={reasonId}>
               Apply
             </Button>
             <p
@@ -65,13 +100,9 @@ export function RoomCta({ room, role, layout = "card" }: RoomCtaProps) {
             </p>
           </>
         ) : (
-          <ApplyDialog room={room} className="w-full" />
+          <ApplyDialog room={room} className={buttonClass} />
         )}
-        {compact ? null : (
-          <Button size="lg" variant="outline" className="w-full" disabled>
-            Request a viewing
-          </Button>
-        )}
+        {compact ? null : viewingButton}
       </div>
     );
   }

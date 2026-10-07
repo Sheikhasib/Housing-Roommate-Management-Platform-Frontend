@@ -50,6 +50,8 @@ export interface RoomDetail extends Omit<PublicRoom, "property"> {
   sizeSqft: number | null;
   amenities: string[] | null;
   availableFrom: string | null;
+  /** The room row carries it; guests only ever receive published rooms. */
+  isPublished?: boolean;
   vacantBeds: number;
   upcomingReleaseDates: string[];
   property: RoomDetailProperty;

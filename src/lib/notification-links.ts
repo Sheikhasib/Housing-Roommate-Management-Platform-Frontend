@@ -10,15 +10,17 @@ function readId(data: NotificationRow["data"], key: string): string | null {
   return typeof value === "string" && value.trim() ? encodeURIComponent(value.trim()) : null;
 }
 
-// Only pages that exist in the app are listed. Viewings and roommates have no page yet.
+// Only pages that exist in the app are listed. Roommates have no page yet.
 const TENANT_BY_TYPE: Partial<Record<NotificationType, string>> = {
   APPLICATION: "/dashboard/applications",
+  VIEWING: "/dashboard/viewings",
   LEASE: "/dashboard/leases",
   INVOICE: "/dashboard/invoices",
   PAYMENT: "/dashboard/payments",
   MAINTENANCE: "/dashboard/maintenance",
 };
 
+// TODO(part 7b): add VIEWING: "/owner/viewings" once that page exists.
 const OWNER_BY_TYPE: Partial<Record<NotificationType, string>> = {
   APPLICATION: "/owner/applications",
   LEASE: "/owner/leases",
