@@ -1,19 +1,48 @@
-// TEMPORARY placeholder to check the Tenant shell in both themes. Delete in the overview feature spec.
-import { CreditCard, FileText, ScrollText, Wrench } from "lucide-react";
+import type { Metadata } from "next";
 
+import { OverviewErrorToast } from "@/app/(admin)/admin/_components/overview-error-toast";
 import { PageHeader } from "@/components/shared/page-header";
-import { StatCard } from "@/components/shared/stat-card";
+import { getDepositActions, getTenantAnalytics, getUnpaidInvoices } from "@/lib/api/tenantOverview";
+import { MoreNumbers } from "./_components/more-numbers";
+import { NextActions } from "./_components/next-actions";
+import { OverviewStats } from "./_components/overview-stats";
+import { TenantCharts } from "./_components/tenant-charts";
 
-export default function TenantPlaceholderPage() {
+export const metadata: Metadata = {
+  title: "Overview",
+  robots: { index: false },
+};
+
+export default async function TenantOverviewPage() {
+  const [analyticsResult, depositsResult, invoicesResult] = await Promise.all([
+    getTenantAnalytics(),
+    getDepositActions(),
+    getUnpaidInvoices(),
+  ]);
+
+  const stats = analyticsResult.ok ? analyticsResult.data : null;
+  const analyticsError = analyticsResult.ok ? undefined : analyticsResult.message;
+  const errors = [analyticsResult, depositsResult, invoicesResult].flatMap((result) =>
+    result.ok ? [] : [result.message],
+  );
+
   return (
     <div className="space-y-6">
-      <PageHeader title="Overview" description="Your applications, leases and payments will appear here." />
-      <div className="grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Applications" value="—" icon={FileText} />
-        <StatCard label="Active lease" value="—" icon={ScrollText} />
-        <StatCard label="Unpaid invoices" value="—" icon={CreditCard} />
-        <StatCard label="Open requests" value="—" icon={Wrench} />
-      </div>
+      <OverviewErrorToast messages={Array.from(new Set(errors))} />
+      <PageHeader
+        title="Overview"
+        description="Where you stand with applications, leases, money and requests."
+      />
+
+      <OverviewStats stats={stats} errorMessage={analyticsError} />
+      <MoreNumbers stats={stats} />
+      <TenantCharts stats={stats} errorMessage={analyticsError} />
+      <NextActions
+        applications={depositsResult.ok ? depositsResult.data : null}
+        invoices={invoicesResult.ok ? invoicesResult.data : null}
+        applicationsError={depositsResult.ok ? undefined : depositsResult.message}
+        invoicesError={invoicesResult.ok ? undefined : invoicesResult.message}
+      />
     </div>
   );
 }
