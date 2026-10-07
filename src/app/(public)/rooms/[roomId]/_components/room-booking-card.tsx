@@ -20,10 +20,12 @@ function nextAvailableText(room: RoomDetail): string {
 function Rent({ room, compact = false }: { room: RoomDetail; compact?: boolean }) {
   return (
     <p className="flex items-baseline gap-1 whitespace-nowrap">
-      <span className={compact ? "text-xl font-semibold text-foreground" : "text-2xl font-semibold text-foreground"}>
+      <span className={compact ? "text-base font-semibold text-foreground" : "text-2xl font-semibold text-foreground"}>
         {formatMoney(room.monthlyRent)}
       </span>
-      <span className="text-sm text-muted-foreground">/ month</span>
+      <span className={compact ? "text-xs text-muted-foreground" : "text-sm text-muted-foreground"}>
+        / month
+      </span>
     </p>
   );
 }
@@ -68,7 +70,7 @@ export function RoomBookingCard({ room, role }: BookingProps) {
 export function RoomBookingBar({ room, role }: BookingProps) {
   return (
     <div className="sticky bottom-0 z-40 border-t border-border bg-card lg:hidden">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <div className="min-w-0">
           <Rent room={room} compact />
           <p className="truncate text-xs text-muted-foreground">{nextAvailableText(room)}</p>
