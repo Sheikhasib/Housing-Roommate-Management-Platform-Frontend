@@ -33,6 +33,7 @@ export const PERMISSIONS = {
   // Tenant only
   "applications.apply": TENANT_ONLY,
   "applications.cancel": TENANT_ONLY,
+  "payments.pay": TENANT_ONLY,
   // Admin area: role changes belong to SUPER_ADMIN only
   "users.changeRole": ["SUPER_ADMIN"],
   // Analytics: each side sees its own version

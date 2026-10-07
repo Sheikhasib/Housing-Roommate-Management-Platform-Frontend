@@ -14,6 +14,7 @@ import type { TenantApplication } from "@/types/application";
 import { useApplication } from "../../_hooks/use-application-queries";
 import { ApplicationTimeline } from "./application-timeline";
 import { CancelApplication } from "./cancel-application";
+import { PayDeposit } from "./pay-deposit";
 
 function Card({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -134,6 +135,8 @@ export function ApplicationDetailView({ application: initial }: { application: T
               </Button>
             ) : null}
           </Card>
+
+          <PayDeposit application={application} amount={depositAmount(application)} />
 
           <Card title="Your application">
             <dl className="grid gap-4 sm:grid-cols-2">
