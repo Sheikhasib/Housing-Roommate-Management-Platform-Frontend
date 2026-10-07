@@ -5,6 +5,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Bell, Building2, LogOut, Menu, User } from "lucide-react";
 
+import { NotificationBell } from "@/components/shared/notification-bell";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { UserMenu } from "@/components/shared/user-menu";
 import { Button } from "@/components/ui/button";
@@ -98,11 +99,7 @@ export function SiteNavbar() {
             <Skeleton className="h-10 w-28 rounded-lg" />
           ) : isAuthenticated ? (
             <>
-              <Button asChild variant="ghost" size="icon" aria-label="Notifications">
-                <Link href="/notifications">
-                  <Bell className="size-5" aria-hidden />
-                </Link>
-              </Button>
+              <NotificationBell />
               <UserMenu context="site" />
             </>
           ) : (
