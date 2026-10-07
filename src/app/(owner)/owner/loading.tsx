@@ -1,0 +1,40 @@
+import { ChartCardSkeleton } from "@/components/shared/chart-card";
+import { StatCardSkeleton } from "@/components/shared/stat-card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+
+export default function Loading() {
+  return (
+    <div className="space-y-6" aria-busy="true">
+      <div className="space-y-2">
+        <Skeleton className="h-8 w-40" />
+        <Skeleton className="h-4 w-72 max-w-full" />
+      </div>
+      <div className="grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {Array.from({ length: 4 }, (_, index) => (
+          <StatCardSkeleton key={index} />
+        ))}
+      </div>
+      <div className="space-y-3">
+        <Skeleton className="h-6 w-28" />
+        <div className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }, (_, index) => (
+            <StatCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+      <Card aria-hidden="true">
+        <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 5 }, (_, index) => (
+            <Skeleton key={index} className="h-5 w-full" />
+          ))}
+        </CardContent>
+      </Card>
+      <div className="grid items-stretch gap-4 lg:grid-cols-2">
+        {Array.from({ length: 4 }, (_, index) => (
+          <ChartCardSkeleton key={index} />
+        ))}
+      </div>
+    </div>
+  );
+}

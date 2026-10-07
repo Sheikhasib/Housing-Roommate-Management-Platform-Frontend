@@ -15,7 +15,7 @@ interface OverviewStatsProps {
 const UNAVAILABLE = "Could not load this number";
 
 /** Wraps a card in a link only when the target page exists. */
-function LinkedCard({ href, children }: { href?: string; children: ReactNode }) {
+export function LinkedCard({ href, children }: { href?: string; children: ReactNode }) {
   if (!href) return <>{children}</>;
   return (
     <Link
