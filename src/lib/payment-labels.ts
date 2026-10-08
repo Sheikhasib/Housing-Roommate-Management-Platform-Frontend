@@ -8,6 +8,11 @@ const GATEWAY_LABELS: Record<string, string> = {
   stripe: "Stripe (card, international)",
 };
 
+/** The short gateway name for badges and table cells: "bKash", "SSLCommerz", "Stripe". */
+export function gatewayShortLabel(name: string): string {
+  return gatewayLabel(name).replace(/\s*\(.*\)$/, "");
+}
+
 /** Works for the request value (`bkash`) and the stored value (`BKASH`). An unknown name is shown as listed. */
 export function gatewayLabel(name: string): string {
   return GATEWAY_LABELS[name.toLowerCase()] ?? name;

@@ -5,6 +5,13 @@ const moneyFormatter = new Intl.NumberFormat("en-BD", {
   maximumFractionDigits: 2,
 });
 
+const wholeMoneyFormatter = new Intl.NumberFormat("en-BD", {
+  style: "currency",
+  currency: "BDT",
+  currencyDisplay: "narrowSymbol",
+  maximumFractionDigits: 0,
+});
+
 const dateFormatter = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" });
 const dateTimeFormatter = new Intl.DateTimeFormat("en-GB", {
   dateStyle: "medium",
@@ -15,6 +22,12 @@ const dateTimeFormatter = new Intl.DateTimeFormat("en-GB", {
 export function formatMoney(value: string | number): string {
   const amount = typeof value === "number" ? value : Number(value);
   return Number.isFinite(amount) ? moneyFormatter.format(amount) : "-";
+}
+
+/** Whole taka without decimals, for chart axis labels (for example ৳80,000). */
+export function formatMoneyWhole(value: string | number): string {
+  const amount = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(amount) ? wholeMoneyFormatter.format(amount) : "-";
 }
 
 function toDate(value: string | number | Date): Date | null {

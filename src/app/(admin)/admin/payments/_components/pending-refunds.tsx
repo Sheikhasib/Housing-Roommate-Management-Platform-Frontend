@@ -9,6 +9,8 @@ import { DataTable, type DataTableColumn } from "@/components/shared/data-table"
 import { ErrorState } from "@/components/shared/error-state";
 import { Pagination } from "@/components/shared/pagination";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { Badge } from "@/components/ui/badge";
+import { gatewayShortLabel } from "@/lib/payment-labels";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,7 +43,7 @@ const COLUMNS: DataTableColumn<PendingRefundRow>[] = [
     header: "Amount",
     cell: (payment) => <span className="text-sm font-medium text-foreground">{formatMoney(payment.amount)}</span>,
   },
-  { key: "gateway", header: "Gateway", cell: (payment) => <StatusBadge status={payment.gateway} /> },
+  { key: "gateway", header: "Gateway", cell: (payment) => <Badge variant="neutral">{gatewayShortLabel(payment.gateway)}</Badge> },
   { key: "status", header: "Status", cell: (payment) => <StatusBadge status={payment.status} /> },
   {
     key: "createdAt",

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { ChartCard } from "@/components/shared/chart-card";
-import { formatMoney } from "@/lib/format";
+import { formatMoney, formatMoneyWhole } from "@/lib/format";
 import type { TenantAnalytics } from "@/types/analytics";
 
 interface MoneyChartProps {
@@ -37,10 +37,16 @@ export default function MoneyChart({ stats, errorMessage }: MoneyChartProps) {
       emptyDescription="This chart appears after your first payment or invoice."
     >
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
+        <BarChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 8 }}>
           <CartesianGrid vertical={false} stroke="var(--border)" />
           <XAxis dataKey="label" tick={AXIS_TICK} tickLine={false} axisLine={{ stroke: "var(--border)" }} />
-          <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} width={56} />
+          <YAxis
+            tick={AXIS_TICK}
+            tickLine={false}
+            axisLine={false}
+            width={76}
+            tickFormatter={(value) => formatMoneyWhole(Number(value))}
+          />
           <Tooltip
             cursor={{ fill: "var(--muted)" }}
             formatter={(value) => formatMoney(Number(value))}
