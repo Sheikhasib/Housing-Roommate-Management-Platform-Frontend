@@ -32,7 +32,7 @@ export function UserMenu({ context }: UserMenuProps) {
   if (!user) return null;
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-10 gap-2 px-2" aria-label={`Account menu for ${user.name}`}>
           <Avatar>
