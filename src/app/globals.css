@@ -178,6 +178,21 @@
   html {
     @apply font-sans;
   }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="tab"],
+  [role="switch"]:not(:disabled),
+  [role="checkbox"]:not(:disabled),
+  [role="menuitem"]:not([aria-disabled="true"]),
+  [role="option"],
+  summary,
+  select {
+    cursor: pointer;
+  }
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
 }
 
 /* Layered radial and beam technique inspired by Aura (MIT), github.com/CristianOlivera1/Aura */
