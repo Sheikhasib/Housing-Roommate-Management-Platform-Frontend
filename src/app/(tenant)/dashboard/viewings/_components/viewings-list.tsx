@@ -11,8 +11,8 @@ import { Pagination } from "@/components/shared/pagination";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import { useUrlState } from "@/hooks/useUrlState";
-import { formatDate, formatDateTime } from "@/lib/format";
-import { TIME_SLOT_LABELS } from "@/lib/viewing-labels";
+import { formatDate } from "@/lib/format";
+import { formatScheduled, TIME_SLOT_LABELS } from "@/lib/viewing-labels";
 import type { TenantViewing } from "@/types/viewing";
 import { VIEWING_STATUSES } from "@/validation/enums";
 import { useMyViewings } from "../_hooks/use-viewing-queries";
@@ -49,9 +49,15 @@ const COLUMNS: DataTableColumn<TenantViewing>[] = [
     header: "Details",
     cell: (v) => {
       if (!v.scheduledDateTime && !v.rejectionReason) return "-";
+      const scheduled = v.scheduledDateTime ? formatScheduled(v.scheduledDateTime, v.preferredDate) : null;
       return (
         <div className="space-y-0.5 text-sm">
-          {v.scheduledDateTime ? <p>Scheduled for {formatDateTime(v.scheduledDateTime)}</p> : null}
+          {scheduled ? (
+            <p>
+              Scheduled for {scheduled.text}
+              {scheduled.note ? <span className="text-muted-foreground">, {scheduled.note}</span> : null}
+            </p>
+          ) : null}
           {v.rejectionReason ? (
             <p className="text-muted-foreground">Reason: {v.rejectionReason}</p>
           ) : null}

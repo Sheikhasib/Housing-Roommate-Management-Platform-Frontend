@@ -11,8 +11,8 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRole } from "@/hooks/useRole";
 import { useUrlState } from "@/hooks/useUrlState";
-import { formatDate, formatDateTime, formatMoney } from "@/lib/format";
-import { plainViewingError, TIME_SLOT_LABELS } from "@/lib/viewing-labels";
+import { formatDate, formatMoney } from "@/lib/format";
+import { formatScheduled, plainViewingError, TIME_SLOT_LABELS } from "@/lib/viewing-labels";
 import type { OwnerViewing } from "@/types/viewing";
 import { VIEWING_STATUSES, type ViewingStatus } from "@/validation/enums";
 import { useRooms } from "../../rooms/_hooks/use-room-queries";
@@ -88,7 +88,16 @@ const COLUMNS: DataTableColumn<OwnerViewing>[] = [
   {
     key: "scheduledDateTime",
     header: "Scheduled",
-    cell: (viewing) => (viewing.scheduledDateTime ? formatDateTime(viewing.scheduledDateTime) : "-"),
+    cell: (viewing) => {
+      if (!viewing.scheduledDateTime) return "-";
+      const { text, note } = formatScheduled(viewing.scheduledDateTime, viewing.preferredDate);
+      return (
+        <span>
+          {text}
+          {note ? <span className="text-muted-foreground">, {note}</span> : null}
+        </span>
+      );
+    },
   },
   { key: "status", header: "Status", cell: (viewing) => <StatusBadge status={viewing.status} /> },
   {
