@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import { AccountSection } from "@/components/shared/account-section";
@@ -51,7 +52,21 @@ function QueryGate<T>({ query, children }: { query: RoleQuery<T>; children: (dat
   return <>{children(query.data)}</>;
 }
 
+/** The tab named in `?tab=`, when this role has it; otherwise the first tab. */
+function pickTab(value: string | null, allowed: readonly string[]): string {
+  return value && allowed.includes(value) ? value : "account";
+}
+
 export function ProfilePage() {
+  return (
+    <Suspense fallback={<ProfileSkeleton />}>
+      <ProfilePageContent />
+    </Suspense>
+  );
+}
+
+function ProfilePageContent() {
+  const tabParam = useSearchParams().get("tab");
   const me = useGetMe();
   const role: Role | undefined = me.data?.role;
 
@@ -91,7 +106,7 @@ export function ProfilePage() {
       />
 
       {role === "TENANT" ? (
-        <Tabs defaultValue="account">
+        <Tabs defaultValue={pickTab(tabParam, ["account", "preferences", "verification"])}>
           <TabsList className="h-10 w-full sm:w-fit">
             <TabsTrigger value="account">Account</TabsTrigger>
             <TabsTrigger value="preferences">Preferences</TabsTrigger>
@@ -108,7 +123,7 @@ export function ProfilePage() {
           </TabsContent>
         </Tabs>
       ) : role === "OWNER" ? (
-        <Tabs defaultValue="account">
+        <Tabs defaultValue={pickTab(tabParam, ["account", "company", "verification"])}>
           <TabsList className="h-10 w-full sm:w-fit">
             <TabsTrigger value="account">Account</TabsTrigger>
             <TabsTrigger value="company">Company</TabsTrigger>

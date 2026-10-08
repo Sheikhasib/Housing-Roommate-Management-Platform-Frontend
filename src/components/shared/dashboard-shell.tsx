@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 
 import { DashboardSidebar } from "@/components/shared/dashboard-sidebar";
 import { DashboardTopbar } from "@/components/shared/dashboard-topbar";
+import { VerificationBanner } from "@/components/shared/verification-banner";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { useSession } from "@/hooks/useSession";
 import { AREA_LABELS, getNavItems } from "@/lib/nav-config";
@@ -70,6 +71,7 @@ export function DashboardShell({ area, children }: DashboardShellProps) {
           onToggleCollapsed={() => setCollapsed((value) => !value)}
         />
         <main id="main" className="bg-aura bg-aura-subtle flex-1 px-4 py-6 sm:px-6 lg:px-8">
+          <VerificationBanner />
           {children}
         </main>
       </div>
