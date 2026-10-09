@@ -1,6 +1,7 @@
 "use client";
 
-import { Check, DoorOpen, Inbox, Users, UserMinus, X } from "lucide-react";
+import Link from "next/link";
+import { DoorOpen, Inbox, Users, UserMinus, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { errorMessage } from "@/app/(owner)/owner/properties/_hooks/use-property-queries";
@@ -13,15 +14,14 @@ import { Pagination } from "@/components/shared/pagination";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/hooks/useSession";
 import { useUrlState } from "@/hooks/useUrlState";
 import { formatDate } from "@/lib/format";
+import { membershipDetails } from "@/lib/membership";
 import type { MembershipRow } from "@/types/roommate";
 import { MEMBERSHIP_STATUSES } from "@/validation/enums";
-import {
-  useLeaveMembership,
-  useMyMemberships,
-  useRespondMembership,
-} from "../_hooks/use-roommate-queries";
+import { useLeaveMembership, useMyMemberships } from "../_hooks/use-roommate-queries";
+import { AnswerButtons } from "./answer-buttons";
 import { InviteMembershipDialog } from "./invite-membership-dialog";
 import { PersonAvatar } from "./match-card";
 import { RemoveMembershipDialog } from "./remove-membership-dialog";
@@ -48,7 +48,11 @@ function otherPerson(row: MembershipRow) {
 function PersonCell({ row }: { row: MembershipRow }) {
   const person = otherPerson(row);
   return (
-    <div className="flex min-w-0 items-center gap-3 text-left">
+    <Link
+      href={`/dashboard/roommates/memberships/${encodeURIComponent(row.id)}`}
+      aria-label={`Open the membership with ${person.name} for ${row.room.name}`}
+      className="flex min-h-10 min-w-0 items-center gap-3 rounded-lg text-left transition-colors duration-150 hover:text-primary focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+    >
       <PersonAvatar person={person} className="size-9" />
       <div className="min-w-0">
         <p className="truncate font-medium text-foreground">{person.name}</p>
@@ -56,14 +60,18 @@ function PersonCell({ row }: { row: MembershipRow }) {
           {row.role === "HOLDER" ? "Invited roommate" : "Lease holder"}
         </p>
       </div>
-    </div>
+    </Link>
   );
 }
 
-function details(row: MembershipRow): string {
-  if (row.status === "REMOVED" && row.removalReason) return `Reason: ${row.removalReason}`;
-  if (row.status === "PENDING" && row.message) return row.message;
-  return "-";
+function DetailsCell({ row }: { row: MembershipRow }) {
+  const { user } = useSession();
+  const text = membershipDetails(row, user?.id ?? null);
+  return (
+    <span className="line-clamp-2 min-w-0 break-words" title={text}>
+      {text}
+    </span>
+  );
 }
 
 const COLUMNS: DataTableColumn<MembershipRow>[] = [
@@ -89,64 +97,10 @@ const COLUMNS: DataTableColumn<MembershipRow>[] = [
   {
     key: "details",
     header: "Details",
-    cell: (row) => <span className="line-clamp-2 break-words">{details(row)}</span>,
+    cell: (row) => <DetailsCell row={row} />,
   },
   { key: "createdAt", header: "Invited", cell: (row) => formatDate(row.createdAt) },
 ];
-
-function AnswerButtons({ row }: { row: MembershipRow }) {
-  const respond = useRespondMembership();
-  const name = row.holder.name;
-
-  const answer = (action: "ACCEPT" | "DECLINE") => async () => {
-    try {
-      const response = await respond.mutateAsync({ id: row.id, body: { action } });
-      toast.success(response.message);
-    } catch (error) {
-      // Guard messages (no longer pending, room already has a member) show as the server wrote them.
-      toast.error(errorMessage(error));
-      throw error;
-    }
-  };
-
-  return (
-    <div className="flex flex-wrap justify-end gap-2">
-      <ConfirmDialog
-        title="Accept this invitation?"
-        description={`You join ${row.room.name} at ${row.room.property.title} as a roommate member. You can report maintenance and see the room's utility bills. Rent stays with ${name}.`}
-        confirmLabel="Accept"
-        cancelLabel="Not now"
-        onConfirm={answer("ACCEPT")}
-        trigger={
-          <Button type="button" size="sm" aria-label={`Accept invitation from ${name}`}>
-            <Check aria-hidden="true" />
-            Accept
-          </Button>
-        }
-      />
-      <ConfirmDialog
-        title="Decline this invitation?"
-        description={`${name} is told that you declined. They can invite you again later.`}
-        confirmLabel="Decline"
-        cancelLabel="Keep invitation"
-        destructive
-        onConfirm={answer("DECLINE")}
-        trigger={
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            className="text-error-text"
-            aria-label={`Decline invitation from ${name}`}
-          >
-            <X aria-hidden="true" />
-            Decline
-          </Button>
-        }
-      />
-    </div>
-  );
-}
 
 function LeaveButton({ row }: { row: MembershipRow }) {
   const leave = useLeaveMembership();

@@ -69,3 +69,14 @@ export interface MembershipRow {
   holder: MatchCardPerson;
   member: MatchCardPerson;
 }
+
+/** One item of GET /roommate/memberships/:id/utility-bills: this projection only, no payment data. */
+export interface UtilityBillRow {
+  id: string;
+  periodStart: string;
+  periodEnd: string;
+  dueDate: string;
+  amount: string | number;
+  status: string;
+  description: string | null;
+}

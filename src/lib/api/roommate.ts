@@ -1,6 +1,12 @@
 import { apiClient } from "@/lib/api/apiClient";
 import type { ApiMeta, ApiSuccess } from "@/types/api";
-import type { MembershipRow, RoommateMatch, RoommatePairRow, RoommateRequestRow } from "@/types/roommate";
+import type {
+  MembershipRow,
+  RoommateMatch,
+  RoommatePairRow,
+  RoommateRequestRow,
+  UtilityBillRow,
+} from "@/types/roommate";
 import type {
   InviteMembershipPayload,
   RemoveMembershipPayload,
@@ -105,4 +111,11 @@ export function removeMembership(membershipId: string, body: RemoveMembershipPay
     `/roommate/memberships/${encodeURIComponent(membershipId)}/remove`,
     { method: "POST", body },
   );
+}
+
+export async function getMembershipUtilityBills(membershipId: string): Promise<UtilityBillRow[]> {
+  const response = await apiClient<ApiSuccess<UtilityBillRow[]>>(
+    `/roommate/memberships/${encodeURIComponent(membershipId)}/utility-bills`,
+  );
+  return response.data;
 }

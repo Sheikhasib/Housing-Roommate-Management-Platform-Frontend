@@ -37,7 +37,12 @@ const ADMIN_BY_TYPE: Partial<Record<NotificationType, string>> = {
 function tenantHref({ type, data }: LinkTarget): string | null {
   // Membership notifications (invitation, joined, declined, left) carry a leaseId, but the invitee
   // must not open that lease, so they are checked before the generic id rules.
-  if (type === "ROOMMATE") return "/dashboard/roommates?tab=memberships";
+  if (type === "ROOMMATE") {
+    const membershipId = readId(data, "membershipId");
+    return membershipId
+      ? `/dashboard/roommates/memberships/${membershipId}`
+      : "/dashboard/roommates?tab=memberships";
+  }
   // Roommate request notifications (sent and answered) have type SYSTEM and data { requestId }.
   if (type === "SYSTEM" && readId(data, "requestId")) return "/dashboard/roommates?tab=requests";
   const applicationId = readId(data, "applicationId");

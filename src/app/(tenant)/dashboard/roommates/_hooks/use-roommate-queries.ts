@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { errorMessage } from "@/app/(owner)/owner/properties/_hooks/use-property-queries";
 import { leasesKey } from "@/app/(tenant)/dashboard/leases/_hooks/use-lease-queries";
 import {
+  getMembershipUtilityBills,
   getMyMemberships,
   getMyPairs,
   getMyRoommateRequests,
@@ -121,6 +122,18 @@ export function useMyMemberships(query: MyMembershipsQuery) {
   });
   useErrorToast(result.error);
   return result;
+}
+
+export const utilityBillsKey = (membershipId: string) =>
+  ["roommate", "utility-bills", membershipId] as const;
+
+/** A 403 (not the holder or an ACTIVE member) reaches the page as the backend wrote it. */
+export function useMembershipUtilityBills(membershipId: string) {
+  return useQuery({
+    queryKey: utilityBillsKey(membershipId),
+    queryFn: () => getMembershipUtilityBills(membershipId),
+    ...OPTIONS,
+  });
 }
 
 function useMembershipMutation<TVariables, TResult>(mutationFn: (variables: TVariables) => Promise<TResult>) {
