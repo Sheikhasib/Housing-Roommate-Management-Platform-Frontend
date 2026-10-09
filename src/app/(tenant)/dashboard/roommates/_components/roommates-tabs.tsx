@@ -1,11 +1,10 @@
 "use client";
 
-import { Handshake, Users } from "lucide-react";
-
-import { EmptyState } from "@/components/shared/empty-state";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUrlState } from "@/hooks/useUrlState";
 import { MatchesTab } from "./matches-tab";
+import { MembershipsTab } from "./memberships-tab";
+import { PairsTab } from "./pairs-tab";
 import { RequestsTab } from "./requests-tab";
 
 const TABS = ["matches", "requests", "pairs", "memberships"] as const;
@@ -46,22 +45,10 @@ export function RoommatesTabs() {
         <RequestsTab />
       </TabsContent>
       <TabsContent value="pairs">
-        <div className="rounded-xl border bg-card shadow-sm">
-          <EmptyState
-            icon={Handshake}
-            title="Pairs are coming soon"
-            description="Your accepted roommates will be listed here."
-          />
-        </div>
+        <PairsTab />
       </TabsContent>
       <TabsContent value="memberships">
-        <div className="rounded-xl border bg-card shadow-sm">
-          <EmptyState
-            icon={Users}
-            title="Memberships are coming soon"
-            description="Lease invitations and shared rooms will be listed here."
-          />
-        </div>
+        <MembershipsTab />
       </TabsContent>
     </Tabs>
   );

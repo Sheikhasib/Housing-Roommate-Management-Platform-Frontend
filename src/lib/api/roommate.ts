@@ -1,7 +1,13 @@
 import { apiClient } from "@/lib/api/apiClient";
 import type { ApiMeta, ApiSuccess } from "@/types/api";
-import type { RoommateMatch, RoommateRequestRow } from "@/types/roommate";
-import type { RespondRoommatePayload, SendRoommatePayload } from "@/validation/roommate";
+import type { MembershipRow, RoommateMatch, RoommatePairRow, RoommateRequestRow } from "@/types/roommate";
+import type {
+  InviteMembershipPayload,
+  RemoveMembershipPayload,
+  RespondMembershipPayload,
+  RespondRoommatePayload,
+  SendRoommatePayload,
+} from "@/validation/roommate";
 
 export interface MyRequestsQuery {
   page: number;
@@ -40,5 +46,63 @@ export function respondToRoommateRequest(requestId: string, body: RespondRoommat
   return apiClient<ApiSuccess<{ id: string; status: string }>>(
     `/roommate/request/${encodeURIComponent(requestId)}/respond`,
     { method: "PATCH", body },
+  );
+}
+
+export async function getMyPairs(): Promise<RoommatePairRow[]> {
+  const response = await apiClient<ApiSuccess<RoommatePairRow[]>>("/roommate/my-pairs");
+  return response.data;
+}
+
+export function removeRoommatePair(pairId: string) {
+  return apiClient<ApiSuccess<{ message: string }>>(`/roommate/pair/${encodeURIComponent(pairId)}`, {
+    method: "DELETE",
+  });
+}
+
+export interface MyMembershipsQuery {
+  page: number;
+  limit: number;
+  status?: string;
+}
+
+export interface MyMembershipsResult {
+  rows: MembershipRow[];
+  meta: ApiMeta;
+}
+
+export async function getMyMemberships(query: MyMembershipsQuery): Promise<MyMembershipsResult> {
+  const { page, limit, status } = query;
+  const response = await apiClient<ApiSuccess<MembershipRow[]>>("/roommate/memberships/my", {
+    query: { page, limit, ...(status ? { status } : {}) },
+  });
+  return {
+    rows: response.data,
+    meta: response.meta ?? { page: 1, limit, total: response.data.length, totalPages: 1 },
+  };
+}
+
+export function inviteMember(body: InviteMembershipPayload) {
+  return apiClient<ApiSuccess<{ id: string }>>("/roommate/memberships/invite", { method: "POST", body });
+}
+
+export function respondToMembership(membershipId: string, body: RespondMembershipPayload) {
+  return apiClient<ApiSuccess<{ id: string }>>(
+    `/roommate/memberships/${encodeURIComponent(membershipId)}/respond`,
+    { method: "PATCH", body },
+  );
+}
+
+export function leaveMembership(membershipId: string) {
+  return apiClient<ApiSuccess<{ id: string }>>(
+    `/roommate/memberships/${encodeURIComponent(membershipId)}/leave`,
+    { method: "POST" },
+  );
+}
+
+export function removeMembership(membershipId: string, body: RemoveMembershipPayload) {
+  return apiClient<ApiSuccess<{ id: string }>>(
+    `/roommate/memberships/${encodeURIComponent(membershipId)}/remove`,
+    { method: "POST", body },
   );
 }

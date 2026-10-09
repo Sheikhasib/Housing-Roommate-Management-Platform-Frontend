@@ -18,7 +18,13 @@ function initials(name: string): string {
   return letters.join("").toUpperCase() || "?";
 }
 
-export function PersonAvatar({ person, className }: { person: MatchCardPerson; className?: string }) {
+export function PersonAvatar({
+  person,
+  className,
+}: {
+  person: Pick<MatchCardPerson, "name" | "imageUrl">;
+  className?: string;
+}) {
   return (
     <Avatar className={className}>
       {person.imageUrl ? <AvatarImage src={person.imageUrl} alt={`Profile picture of ${person.name}`} /> : null}

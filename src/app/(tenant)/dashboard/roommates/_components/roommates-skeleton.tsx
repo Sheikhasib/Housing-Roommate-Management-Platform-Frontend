@@ -68,3 +68,22 @@ export function RoommatesSkeleton() {
     </div>
   );
 }
+
+/** Rows for the Pairs and Memberships tabs. */
+export function ListSkeleton({ rows = 4, withFilter = false }: { rows?: number; withFilter?: boolean }) {
+  return (
+    <div className="space-y-4" aria-busy="true">
+      {withFilter ? <Skeleton className="h-14 w-full sm:w-44" /> : null}
+      <div className="divide-y overflow-hidden rounded-xl border bg-card shadow-sm" aria-hidden="true">
+        {Array.from({ length: rows }, (_, index) => (
+          <div key={index} className="flex items-center gap-4 p-4">
+            <Skeleton className="size-9 rounded-full" />
+            <Skeleton className="h-4 w-1/3" />
+            <Skeleton className="h-5 w-20 rounded-full" />
+            <Skeleton className="ml-auto h-9 w-24" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
