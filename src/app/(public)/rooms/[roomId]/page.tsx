@@ -12,8 +12,9 @@ import { getRelatedRooms, getRoomById } from "@/lib/api/rooms";
 import { ACCESS_COOKIE } from "@/lib/auth/constants";
 import { verifyAccessToken } from "@/lib/auth/jwt";
 import { formatDate, formatMoney } from "@/lib/format";
+import { getMapHref } from "@/lib/map-link";
 import { PROPERTY_TYPE_LABELS, ROOM_TYPE_LABELS } from "@/lib/room-labels";
-import type { PropertyLocation, RoomDetail } from "@/types/room";
+import type { RoomDetail } from "@/types/room";
 import { RelatedRooms } from "./_components/related-rooms";
 import { RoomAmenities } from "./_components/room-amenities";
 import { RoomBookingBar, RoomBookingCard } from "./_components/room-booking-card";
@@ -54,23 +55,6 @@ export async function generateMetadata({
   };
 }
 
-function mapHref(location: PropertyLocation | null): string | null {
-  if (!location) return null;
-  // The map URL is written by the owner: only an https link is rendered.
-  if (location.googleMapUrl?.startsWith("https://")) return location.googleMapUrl;
-
-  const lat = Number(location.latitude);
-  const lng = Number(location.longitude);
-  const hasPin =
-    location.latitude !== null &&
-    location.longitude !== null &&
-    Number.isFinite(lat) &&
-    Number.isFinite(lng) &&
-    Math.abs(lat) <= 90 &&
-    Math.abs(lng) <= 180;
-  return hasPin ? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}` : null;
-}
-
 function SectionHeading({ id, children }: { id: string; children: string }) {
   return (
     <h2 id={id} className="text-lg font-semibold text-foreground">
@@ -95,7 +79,7 @@ export default async function RoomDetailPage({ params }: PageProps<"/rooms/[room
   const images = roomImages(room);
   const amenities = room.amenities ?? [];
   const place = [property.area, property.city].filter(Boolean).join(", ");
-  const mapLink = mapHref(location);
+  const mapLink = getMapHref(location);
   const owner = property.owner;
   const ownerImage = owner.user?.imageUrl ?? null;
 

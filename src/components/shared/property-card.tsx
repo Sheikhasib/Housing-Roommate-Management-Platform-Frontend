@@ -73,12 +73,9 @@ export function PropertyCard({ property }: PropertyCardProps) {
         </div>
 
         <Button asChild variant="outline" className="mt-auto w-full">
-          <Link
-            href={`/rooms?city=${encodeURIComponent(property.city)}`}
-            className="after:absolute after:inset-0"
-          >
-            View rooms
-            <span className="sr-only"> in {property.title}</span>
+          <Link href={`/properties/${property.id}`} className="after:absolute after:inset-0">
+            View details
+            <span className="sr-only"> for {property.title}</span>
           </Link>
         </Button>
       </div>

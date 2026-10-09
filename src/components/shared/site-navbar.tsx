@@ -24,6 +24,7 @@ interface NavLink {
 const PUBLIC_LINKS: readonly NavLink[] = [
   { label: "Home", href: "/" },
   { label: "Rooms", href: "/rooms" },
+  { label: "Properties", href: "/properties" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];

@@ -1,4 +1,4 @@
-import type { PropertyType } from "@/validation/enums";
+import type { PropertyType, RoomStatus, RoomType } from "@/validation/enums";
 import type { CloudinaryImage, PublicOwner } from "@/types/room";
 
 /** The part of one published room that `GET /property/public` nests under a property. */
@@ -16,9 +16,68 @@ export interface PublicPropertySummary {
   city: string;
   area: string | null;
   images: CloudinaryImage[] | null;
+  amenities: string[] | null;
+  /** Decimal(9,6) arrives as a string; null when no pin is set. */
+  latitude: string | number | null;
+  longitude: string | number | null;
   owner: PublicOwner;
   rooms: PublicPropertyRoom[];
   _count: { rooms: number };
+}
+
+/** The unit a room belongs to (guest view of `GET /property/:propertyId`). */
+export interface PublicPropertyUnit {
+  id: string;
+  label: string;
+  description: string | null;
+  floor: number | null;
+}
+
+/**
+ * One raw Room row nested in the guest property detail. It has no computed availability fields
+ * (`availableBeds`, `availableNow`, `nextAvailableDate`) and no nested property.
+ */
+export interface PublicPropertyDetailRoom {
+  id: string;
+  name: string;
+  description: string | null;
+  type: RoomType;
+  bedCount: number;
+  occupiedBeds: number;
+  monthlyRent: string;
+  bookingDeposit: string;
+  minLeaseMonths: number;
+  sizeSqft: number | null;
+  isFurnished: boolean;
+  amenities: string[] | null;
+  images: CloudinaryImage[] | null;
+  availableFrom: string | null;
+  status: RoomStatus;
+  isPublished: boolean;
+  propertyId: string;
+  unitId: string | null;
+  unit: PublicPropertyUnit | null;
+}
+
+/** `GET /property/:propertyId` as a guest or tenant: published rooms only, `units` always empty. */
+export interface PublicPropertyDetail {
+  id: string;
+  title: string;
+  description: string | null;
+  type: PropertyType;
+  city: string;
+  area: string | null;
+  address: string | null;
+  googleMapUrl: string | null;
+  latitude: string | number | null;
+  longitude: string | number | null;
+  amenities: string[] | null;
+  images: CloudinaryImage[] | null;
+  houseRules: string | null;
+  createdAt: string;
+  updatedAt: string;
+  owner: PublicOwner | null;
+  rooms: PublicPropertyDetailRoom[];
 }
 
 /** One item of `GET /property/my-properties` (owner) or `GET /manager/my-properties` (manager). */
