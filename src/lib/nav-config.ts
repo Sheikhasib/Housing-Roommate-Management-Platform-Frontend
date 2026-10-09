@@ -33,7 +33,6 @@ const TENANT_ROLES = ["TENANT"] as const satisfies readonly Role[];
 
 /**
  * Single source of truth for dashboard navigation (spec 01-foundation).
- * Tenant "Roommates" is P1 and is added when that page is approved.
  */
 export const NAV_CONFIG: Record<Area, readonly NavItem[]> = {
   tenant: [
@@ -44,6 +43,7 @@ export const NAV_CONFIG: Record<Area, readonly NavItem[]> = {
     { label: "Invoices", href: "/dashboard/invoices", icon: Receipt, roles: TENANT_ROLES },
     { label: "Payments", href: "/dashboard/payments", icon: CreditCard, roles: TENANT_ROLES },
     { label: "Maintenance", href: "/dashboard/maintenance", icon: Wrench, roles: TENANT_ROLES },
+    { label: "Roommates", href: "/dashboard/roommates", icon: Users, roles: TENANT_ROLES },
     { label: "Profile", href: "/dashboard/profile", icon: User, roles: TENANT_ROLES },
   ],
   owner: [
