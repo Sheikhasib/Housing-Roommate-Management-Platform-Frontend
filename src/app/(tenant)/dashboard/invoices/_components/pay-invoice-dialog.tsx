@@ -33,13 +33,15 @@ interface PayInvoiceDialogProps {
   invoice: TenantInvoice;
   /** "Try again" after a failed or cancelled payment, "Pay" otherwise. */
   retry: boolean;
+  /** Overrides the trigger label, e.g. "Pay again" for a FAILED invoice. */
+  actionLabel?: string;
 }
 
 /**
  * The Pay action of one UNPAID invoice. The gateway buttons come from the backend list; only the gateway
  * is sent to start the payment, so the amount shown here is for information and the backend decides it.
  */
-export function PayInvoiceDialog({ invoice, retry }: PayInvoiceDialogProps) {
+export function PayInvoiceDialog({ invoice, retry, actionLabel }: PayInvoiceDialogProps) {
   const [open, setOpen] = useState(false);
   const [pendingGateway, setPendingGateway] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
@@ -72,13 +74,14 @@ export function PayInvoiceDialog({ invoice, retry }: PayInvoiceDialogProps) {
     if (!next) setFormError(null);
   };
 
-  const label = `${retry ? "Try again" : "Pay"} for ${invoice.room.name}`;
+  const triggerText = actionLabel ?? (retry ? "Try again" : "Pay");
+  const label = `${triggerText} for ${invoice.room.name}`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button size="sm" aria-label={label}>
-          {retry ? "Try again" : "Pay"}
+          {triggerText}
         </Button>
       </DialogTrigger>
       <DialogContent>

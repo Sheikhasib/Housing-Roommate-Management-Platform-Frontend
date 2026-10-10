@@ -17,9 +17,7 @@ import { INVOICE_STATUSES, INVOICE_TYPES } from "@/validation/enums";
 import { useMyInvoices } from "../_hooks/use-invoice-queries";
 import { PayInvoiceDialog } from "./pay-invoice-dialog";
 
-const FAILED_NOTE =
-  "This payment did not go through and this invoice can no longer be paid here. Please contact your property owner.";
-const FAILED_NOTE_SHORT = "Payment failed. Contact your property owner.";
+const FAILED_NOTE = "Last payment failed.";
 
 const toOptions = (values: readonly string[]) =>
   values.map((value) => ({
@@ -89,9 +87,12 @@ function RowActions({ invoice, checking, onCheckAgain }: RowActionsProps) {
   }
   if (invoice.status === "FAILED") {
     return (
-      <p className="max-w-56 text-xs whitespace-normal break-words text-muted-foreground" title={FAILED_NOTE}>
-        {FAILED_NOTE_SHORT}
-      </p>
+      <div className="flex max-w-56 flex-col items-start gap-1.5 whitespace-normal break-words">
+        <Can permission="payments.pay">
+          <PayInvoiceDialog invoice={invoice} retry actionLabel="Pay again" />
+        </Can>
+        <p className="text-xs text-muted-foreground">{FAILED_NOTE}</p>
+      </div>
     );
   }
   if (invoice.status === "UNPAID") {
