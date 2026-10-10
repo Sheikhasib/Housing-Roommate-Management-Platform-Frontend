@@ -46,7 +46,7 @@ Open the live app, go to **Log in**, and use the **Quick demo login** buttons to
 - Overview with stats, charts and a "next actions" list
 - Request a viewing (and cancel it), apply for a room (and cancel the application)
 - See leases, open a lease, terminate it
-- Pay the deposit, pay invoices, see payment history and payment details
+- Pay the deposit, pay invoices (and pay again if a payment failed), see payment history and payment details
 - Find roommates: ranked matches, send and answer requests, pairs, invite a roommate to your room and see the room's utility bills with a suggested equal split
 - Raise maintenance requests with photos and follow their status
 - Notifications, profile and identity verification
