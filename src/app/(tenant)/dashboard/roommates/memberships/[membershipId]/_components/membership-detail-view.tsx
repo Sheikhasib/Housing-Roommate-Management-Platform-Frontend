@@ -67,6 +67,7 @@ const BILL_COLUMNS: DataTableColumn<UtilityBillRow>[] = [
   {
     key: "description",
     header: "Description",
+    wrap: true,
     cell: (bill) => <span className="line-clamp-2 break-words">{bill.description || "-"}</span>,
   },
 ];

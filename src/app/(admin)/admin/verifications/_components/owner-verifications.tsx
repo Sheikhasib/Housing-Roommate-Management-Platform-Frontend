@@ -25,21 +25,30 @@ const COLUMNS: DataTableColumn<OwnerVerificationRow>[] = [
     key: "applicant",
     header: "Owner",
     cell: (row) => (
-      <div className="min-w-0">
-        <p className="truncate font-medium text-foreground">{row.name}</p>
-        <p className="truncate text-xs text-muted-foreground">{row.email}</p>
-        {row.companyName ? <p className="truncate text-xs text-muted-foreground">{row.companyName}</p> : null}
+      <div className="max-w-56 min-w-0">
+        <p className="truncate font-medium text-foreground" title={row.name}>
+          {row.name}
+        </p>
+        <p className="truncate text-xs text-muted-foreground" title={row.email}>
+          {row.email}
+        </p>
+        {row.companyName ? (
+          <p className="truncate text-xs text-muted-foreground" title={row.companyName}>
+            {row.companyName}
+          </p>
+        ) : null}
       </div>
     ),
   },
   {
     key: "status",
     header: "Status",
+    wrap: true,
     cell: (row) => (
       <div className="space-y-1">
         <StatusBadge status={row.verificationStatus} />
         {row.verificationStatus === "REJECTED" && row.rejectionReason ? (
-          <p className="max-w-56 text-xs text-muted-foreground">{row.rejectionReason}</p>
+          <p className="text-xs text-muted-foreground">{row.rejectionReason}</p>
         ) : null}
       </div>
     ),

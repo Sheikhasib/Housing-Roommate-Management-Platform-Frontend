@@ -19,6 +19,7 @@ import { PayInvoiceDialog } from "./pay-invoice-dialog";
 
 const FAILED_NOTE =
   "This payment did not go through and this invoice can no longer be paid here. Please contact your property owner.";
+const FAILED_NOTE_SHORT = "Payment failed. Contact your property owner.";
 
 const toOptions = (values: readonly string[]) =>
   values.map((value) => ({
@@ -38,10 +39,11 @@ const COLUMNS: DataTableColumn<TenantInvoice>[] = [
   {
     key: "room",
     header: "Room",
+    wrap: true,
     cell: (invoice) => (
       <div className="min-w-0">
         <p className="font-medium text-foreground">{invoice.room.name}</p>
-        <p className="truncate text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           {invoice.room.property.title}, {invoice.room.property.city}
         </p>
       </div>
@@ -73,7 +75,7 @@ interface RowActionsProps {
 function RowActions({ invoice, checking, onCheckAgain }: RowActionsProps) {
   if (isProcessing(invoice)) {
     return (
-      <div className="flex max-w-56 flex-col items-start gap-2" role="status">
+      <div className="flex max-w-56 flex-col items-start gap-2 whitespace-normal break-words" role="status">
         <p className="flex items-start gap-1.5 text-xs text-foreground">
           <Clock className="mt-0.5 size-3.5 shrink-0 text-info" aria-hidden="true" />
           Your payment is being confirmed.
@@ -86,7 +88,11 @@ function RowActions({ invoice, checking, onCheckAgain }: RowActionsProps) {
     );
   }
   if (invoice.status === "FAILED") {
-    return <p className="max-w-56 text-xs text-muted-foreground">{FAILED_NOTE}</p>;
+    return (
+      <p className="max-w-56 text-xs whitespace-normal break-words text-muted-foreground" title={FAILED_NOTE}>
+        {FAILED_NOTE_SHORT}
+      </p>
+    );
   }
   if (invoice.status === "UNPAID") {
     const last = invoice.payment?.status;

@@ -38,13 +38,14 @@ const COLUMNS: DataTableColumn<OwnerApplicationRow>[] = [
     cell: (application) => (
       <Link
         href={`/owner/applications/${application.id}`}
-        className="font-medium text-foreground hover:text-primary hover:underline"
+        title={application.tenantProfile.name}
+        className="block max-w-56 truncate font-medium text-foreground hover:text-primary hover:underline"
       >
         {application.tenantProfile.name}
       </Link>
     ),
   },
-  { key: "room", header: "Room", cell: (a) => <span className="truncate">{a.room.name}</span> },
+  { key: "room", header: "Room", wrap: true, cell: (a) => a.room.name },
   { key: "moveInDate", header: "Move-in", cell: (a) => formatDate(a.moveInDate) },
   {
     key: "leaseMonths",

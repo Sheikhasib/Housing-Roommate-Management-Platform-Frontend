@@ -60,6 +60,7 @@ const COLUMNS: DataTableColumn<PendingSettlementRow>[] = [
   {
     key: "id",
     header: "Payment",
+    wrap: true,
     cell: (payment) => <span className="font-mono text-xs break-all text-foreground">{payment.id}</span>,
   },
   {

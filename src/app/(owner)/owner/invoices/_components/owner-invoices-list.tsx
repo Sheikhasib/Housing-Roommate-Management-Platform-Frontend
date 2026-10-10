@@ -29,9 +29,13 @@ const COLUMNS: DataTableColumn<OwnerInvoiceRow>[] = [
     key: "tenant",
     header: "Tenant",
     cell: (invoice) => (
-      <div className="min-w-0">
-        <p className="truncate font-medium text-foreground">{invoice.lease.tenantProfile.name}</p>
-        <p className="truncate text-xs text-muted-foreground">{invoice.lease.tenantProfile.email}</p>
+      <div className="max-w-56 min-w-0">
+        <p className="truncate font-medium text-foreground" title={invoice.lease.tenantProfile.name}>
+          {invoice.lease.tenantProfile.name}
+        </p>
+        <p className="truncate text-xs text-muted-foreground" title={invoice.lease.tenantProfile.email}>
+          {invoice.lease.tenantProfile.email}
+        </p>
       </div>
     ),
   },

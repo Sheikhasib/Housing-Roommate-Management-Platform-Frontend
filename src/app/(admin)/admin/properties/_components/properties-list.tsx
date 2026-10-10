@@ -26,10 +26,11 @@ const COLUMNS: DataTableColumn<AdminPropertyRow>[] = [
   {
     key: "title",
     header: "Property",
+    wrap: true,
     cell: (property) => (
       <div className="min-w-0">
-        <p className="truncate font-medium text-foreground">{property.title}</p>
-        <p className="truncate text-xs text-muted-foreground">
+        <p className="font-medium text-foreground">{property.title}</p>
+        <p className="text-xs text-muted-foreground">
           {[property.area, property.city].filter(Boolean).join(", ")}
         </p>
       </div>
@@ -43,10 +44,11 @@ const COLUMNS: DataTableColumn<AdminPropertyRow>[] = [
   {
     key: "owner",
     header: "Owner",
+    wrap: true,
     cell: (property) => (
       <div className="min-w-0 space-y-1">
-        <p className="truncate text-sm font-medium text-foreground">{property.owner.name}</p>
-        <p className="truncate text-xs text-muted-foreground">{property.owner.email}</p>
+        <p className="text-sm font-medium text-foreground">{property.owner.name}</p>
+        <p className="text-xs text-muted-foreground">{property.owner.email}</p>
         <StatusBadge status={property.owner.verificationStatus} />
       </div>
     ),

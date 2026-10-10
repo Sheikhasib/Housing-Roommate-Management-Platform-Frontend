@@ -30,13 +30,14 @@ const COLUMNS: DataTableColumn<OwnerLeaseRow>[] = [
     cell: (lease) => (
       <Link
         href={`/owner/leases/${lease.id}`}
-        className="font-medium text-foreground hover:text-primary hover:underline"
+        title={lease.tenantProfile.name}
+        className="block max-w-56 truncate font-medium text-foreground hover:text-primary hover:underline"
       >
         {lease.tenantProfile.name}
       </Link>
     ),
   },
-  { key: "room", header: "Room", cell: (lease) => <span className="truncate">{lease.room.name}</span> },
+  { key: "room", header: "Room", wrap: true, cell: (lease) => lease.room.name },
   { key: "monthlyRent", header: "Rent", cell: (lease) => formatMoney(lease.monthlyRent) },
   { key: "startDate", header: "Start date", cell: (lease) => formatDate(lease.startDate) },
   { key: "endDate", header: "End date", cell: (lease) => formatDate(lease.endDate) },

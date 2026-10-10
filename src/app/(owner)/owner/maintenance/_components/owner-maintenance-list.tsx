@@ -32,17 +32,22 @@ const COLUMNS: DataTableColumn<OwnerMaintenanceRequest>[] = [
   {
     key: "title",
     header: "Request",
-    cell: (request) => <p className="max-w-64 truncate font-medium text-foreground">{request.title}</p>,
+    wrap: true,
+    cell: (request) => <p className="font-medium text-foreground">{request.title}</p>,
   },
-  { key: "room", header: "Room", cell: (request) => request.room?.name ?? "-" },
+  { key: "room", header: "Room", wrap: true, cell: (request) => request.room?.name ?? "-" },
   {
     key: "tenant",
     header: "Tenant",
     cell: (request) =>
       request.tenantProfile ? (
-        <div className="min-w-0">
-          <p className="truncate text-foreground">{request.tenantProfile.name}</p>
-          <p className="truncate text-xs text-muted-foreground">{request.tenantProfile.email}</p>
+        <div className="max-w-56 min-w-0">
+          <p className="truncate text-foreground" title={request.tenantProfile.name}>
+            {request.tenantProfile.name}
+          </p>
+          <p className="truncate text-xs text-muted-foreground" title={request.tenantProfile.email}>
+            {request.tenantProfile.email}
+          </p>
         </div>
       ) : (
         "-"

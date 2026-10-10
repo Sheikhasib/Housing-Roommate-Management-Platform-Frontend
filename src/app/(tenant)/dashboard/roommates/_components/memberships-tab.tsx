@@ -51,11 +51,13 @@ function PersonCell({ row }: { row: MembershipRow }) {
     <Link
       href={`/dashboard/roommates/memberships/${encodeURIComponent(row.id)}`}
       aria-label={`Open the membership with ${person.name} for ${row.room.name}`}
-      className="flex min-h-10 min-w-0 items-center gap-3 rounded-lg text-left transition-colors duration-150 hover:text-primary focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+      className="flex min-h-10 max-w-56 min-w-0 items-center gap-3 rounded-lg text-left transition-colors duration-150 hover:text-primary focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
     >
       <PersonAvatar person={person} className="size-9" />
       <div className="min-w-0">
-        <p className="truncate font-medium text-foreground">{person.name}</p>
+        <p className="truncate font-medium text-foreground" title={person.name}>
+          {person.name}
+        </p>
         <p className="truncate text-xs text-muted-foreground">
           {row.role === "HOLDER" ? "Invited roommate" : "Lease holder"}
         </p>
@@ -79,10 +81,11 @@ const COLUMNS: DataTableColumn<MembershipRow>[] = [
   {
     key: "room",
     header: "Room",
+    wrap: true,
     cell: (row) => (
       <div className="min-w-0 text-left">
-        <p className="truncate font-medium text-foreground">{row.room.name}</p>
-        <p className="truncate text-xs text-muted-foreground">
+        <p className="font-medium text-foreground">{row.room.name}</p>
+        <p className="text-xs text-muted-foreground">
           {row.room.property.title}, {row.room.property.city}
         </p>
       </div>
@@ -97,6 +100,7 @@ const COLUMNS: DataTableColumn<MembershipRow>[] = [
   {
     key: "details",
     header: "Details",
+    wrap: true,
     cell: (row) => <DetailsCell row={row} />,
   },
   { key: "createdAt", header: "Invited", cell: (row) => formatDate(row.createdAt) },

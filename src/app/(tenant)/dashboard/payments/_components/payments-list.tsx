@@ -32,11 +32,12 @@ const COLUMNS: DataTableColumn<Payment>[] = [
   {
     key: "purpose",
     header: "Payment for",
+    wrap: true,
     cell: (payment) => (
       <div className="min-w-0">
         <p className="font-medium text-foreground">{PAYMENT_PURPOSE_LABELS[payment.purpose]}</p>
         {payment.application?.room?.name ? (
-          <p className="truncate text-xs text-muted-foreground">{payment.application.room.name}</p>
+          <p className="text-xs text-muted-foreground">{payment.application.room.name}</p>
         ) : null}
       </div>
     ),

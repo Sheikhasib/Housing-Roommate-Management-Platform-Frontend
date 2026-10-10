@@ -27,6 +27,7 @@ const COLUMNS: DataTableColumn<TenantViewing>[] = [
   {
     key: "room",
     header: "Room",
+    wrap: true,
     cell: (viewing) => (
       <div className="min-w-0">
         <Link
@@ -35,7 +36,7 @@ const COLUMNS: DataTableColumn<TenantViewing>[] = [
         >
           {viewing.room.name}
         </Link>
-        <p className="truncate text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           {viewing.room.property.title}, {viewing.room.property.city}
         </p>
       </div>
@@ -47,6 +48,7 @@ const COLUMNS: DataTableColumn<TenantViewing>[] = [
   {
     key: "details",
     header: "Details",
+    wrap: true,
     cell: (v) => {
       if (!v.scheduledDateTime && !v.rejectionReason) return "-";
       const scheduled = v.scheduledDateTime ? formatScheduled(v.scheduledDateTime, v.preferredDate) : null;

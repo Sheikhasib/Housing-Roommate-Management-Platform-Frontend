@@ -19,15 +19,18 @@ const COLUMNS: DataTableColumn<RoommatePairRow>[] = [
     key: "roommate",
     header: "Roommate",
     cell: (row) => (
-      <div className="flex min-w-0 items-center gap-3 text-left">
+      <div className="flex max-w-56 min-w-0 items-center gap-3 text-left">
         <PersonAvatar person={row.roommate} className="size-9" />
-        <p className="truncate font-medium text-foreground">{row.roommate.name}</p>
+        <p className="truncate font-medium text-foreground" title={row.roommate.name}>
+          {row.roommate.name}
+        </p>
       </div>
     ),
   },
   {
     key: "occupation",
     header: "Occupation",
+    wrap: true,
     cell: (row) => row.roommate.occupation || <span className="text-muted-foreground">Not set</span>,
   },
   { key: "createdAt", header: "Paired since", cell: (row) => formatDate(row.createdAt) },

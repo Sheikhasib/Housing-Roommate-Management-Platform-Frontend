@@ -92,9 +92,13 @@ const COLUMNS: DataTableColumn<AuditLogRow>[] = [
     key: "action",
     header: "Action",
     cell: (log) => (
-      <div className="min-w-0">
-        <p className="truncate font-medium text-foreground">{log.action}</p>
-        <p className="truncate text-xs text-muted-foreground">{log.entity}</p>
+      <div className="max-w-56 min-w-0">
+        <p className="truncate font-medium text-foreground" title={log.action}>
+          {log.action}
+        </p>
+        <p className="truncate text-xs text-muted-foreground" title={log.entity}>
+          {log.entity}
+        </p>
       </div>
     ),
   },
@@ -102,8 +106,10 @@ const COLUMNS: DataTableColumn<AuditLogRow>[] = [
     key: "actor",
     header: "Actor",
     cell: (log) => (
-      <div className="min-w-0">
-        <p className="truncate text-sm text-foreground">{log.actorEmail ?? "System"}</p>
+      <div className="max-w-56 min-w-0">
+        <p className="truncate text-sm text-foreground" title={log.actorEmail ?? "System"}>
+          {log.actorEmail ?? "System"}
+        </p>
         {log.actorRole ? <p className="truncate text-xs text-muted-foreground">{log.actorRole}</p> : null}
       </div>
     ),

@@ -18,9 +18,13 @@ const COLUMNS: DataTableColumn<TenantVerificationRow>[] = [
     key: "applicant",
     header: "Tenant",
     cell: (row) => (
-      <div className="min-w-0">
-        <p className="truncate font-medium text-foreground">{row.name}</p>
-        <p className="truncate text-xs text-muted-foreground">{row.email}</p>
+      <div className="max-w-56 min-w-0">
+        <p className="truncate font-medium text-foreground" title={row.name}>
+          {row.name}
+        </p>
+        <p className="truncate text-xs text-muted-foreground" title={row.email}>
+          {row.email}
+        </p>
       </div>
     ),
   },

@@ -34,9 +34,13 @@ const COLUMNS: DataTableColumn<AdminUser>[] = [
     key: "name",
     header: "User",
     cell: (user) => (
-      <div className="min-w-0">
-        <p className="truncate font-medium text-foreground">{user.name}</p>
-        <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+      <div className="max-w-56 min-w-0">
+        <p className="truncate font-medium text-foreground" title={user.name}>
+          {user.name}
+        </p>
+        <p className="truncate text-xs text-muted-foreground" title={user.email}>
+          {user.email}
+        </p>
       </div>
     ),
   },

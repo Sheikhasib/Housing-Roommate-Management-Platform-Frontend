@@ -43,19 +43,27 @@ const COLUMNS: DataTableColumn<OwnerViewing>[] = [
       const tenant = viewing.tenantProfile;
       if (!tenant) return "-";
       return (
-        <div className="flex min-w-0 items-start gap-3 text-left">
+        <div className="flex max-w-56 min-w-0 items-start gap-3 text-left">
           <Avatar>
             {tenant.user?.imageUrl ? <AvatarImage src={tenant.user.imageUrl} alt="" /> : null}
             <AvatarFallback>{initials(tenant.name)}</AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <p className="truncate font-medium text-foreground">{tenant.name}</p>
-            <p className="truncate text-xs text-muted-foreground">{tenant.email}</p>
+            <p className="truncate font-medium text-foreground" title={tenant.name}>
+              {tenant.name}
+            </p>
+            <p className="truncate text-xs text-muted-foreground" title={tenant.email}>
+              {tenant.email}
+            </p>
             {tenant.contactNumber ? (
-              <p className="truncate text-xs text-muted-foreground">{tenant.contactNumber}</p>
+              <p className="truncate text-xs text-muted-foreground" title={tenant.contactNumber}>
+                {tenant.contactNumber}
+              </p>
             ) : null}
             {tenant.occupation ? (
-              <p className="truncate text-xs text-muted-foreground">{tenant.occupation}</p>
+              <p className="truncate text-xs text-muted-foreground" title={tenant.occupation}>
+                {tenant.occupation}
+              </p>
             ) : null}
           </div>
         </div>
@@ -65,10 +73,11 @@ const COLUMNS: DataTableColumn<OwnerViewing>[] = [
   {
     key: "room",
     header: "Room",
+    wrap: true,
     cell: (viewing) =>
       viewing.room ? (
         <div className="min-w-0">
-          <p className="truncate text-foreground">{viewing.room.name}</p>
+          <p className="text-foreground">{viewing.room.name}</p>
           <p className="text-xs text-muted-foreground">{formatMoney(viewing.room.monthlyRent)} a month</p>
         </div>
       ) : (
@@ -103,10 +112,11 @@ const COLUMNS: DataTableColumn<OwnerViewing>[] = [
   {
     key: "details",
     header: "Details",
+    wrap: true,
     cell: (viewing) => {
       if (!viewing.message && !viewing.rejectionReason) return "-";
       return (
-        <div className="max-w-56 space-y-0.5 text-sm">
+        <div className="space-y-0.5 text-sm">
           {viewing.message ? <p className="line-clamp-2">{viewing.message}</p> : null}
           {viewing.rejectionReason ? (
             <p className="line-clamp-2 text-muted-foreground">Reason: {viewing.rejectionReason}</p>

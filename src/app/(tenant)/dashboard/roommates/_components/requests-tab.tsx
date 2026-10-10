@@ -105,11 +105,13 @@ function columnsFor(side: "received" | "sent"): DataTableColumn<RoommateRequestR
     {
       key: "lifestyle",
       header: "Lifestyle",
+      wrap: true,
       cell: (row) => <LifestyleChips person={side === "received" ? row.sender : row.receiver} />,
     },
     {
       key: "message",
       header: "Message",
+      wrap: true,
       cell: (row) => <span className="line-clamp-2 break-words">{row.message || "No message"}</span>,
     },
     {

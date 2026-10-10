@@ -35,6 +35,7 @@ const COLUMNS: DataTableColumn<RoomRow>[] = [
   {
     key: "name",
     header: "Room",
+    wrap: true,
     cell: (room) => (
       <div className="min-w-0">
         <Link
@@ -50,9 +51,10 @@ const COLUMNS: DataTableColumn<RoomRow>[] = [
   {
     key: "property",
     header: "Property",
+    wrap: true,
     cell: (room) => (
       <div className="min-w-0">
-        <p className="truncate">{room.property.title}</p>
+        <p>{room.property.title}</p>
         {room.property.city ? (
           <p className="text-xs text-muted-foreground">{room.property.city}</p>
         ) : null}

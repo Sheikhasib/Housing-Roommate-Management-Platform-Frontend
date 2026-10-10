@@ -30,9 +30,13 @@ const COLUMNS: DataTableColumn<AdminPaymentRow>[] = [
     cell: (payment) => {
       const tenant = payment.application?.tenantProfile ?? payment.invoice?.lease?.tenantProfile ?? null;
       return tenant ? (
-        <div className="min-w-0">
-          <p className="truncate font-medium text-foreground">{tenant.name}</p>
-          <p className="truncate text-xs text-muted-foreground">{tenant.email}</p>
+        <div className="max-w-56 min-w-0">
+          <p className="truncate font-medium text-foreground" title={tenant.name}>
+            {tenant.name}
+          </p>
+          <p className="truncate text-xs text-muted-foreground" title={tenant.email}>
+            {tenant.email}
+          </p>
         </div>
       ) : (
         <span className="text-muted-foreground">Not available</span>

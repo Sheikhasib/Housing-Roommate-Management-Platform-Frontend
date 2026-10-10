@@ -25,6 +25,7 @@ const COLUMNS: DataTableColumn<TenantApplication>[] = [
   {
     key: "room",
     header: "Room",
+    wrap: true,
     cell: (application) => (
       <div className="min-w-0">
         <Link
@@ -33,7 +34,7 @@ const COLUMNS: DataTableColumn<TenantApplication>[] = [
         >
           {application.room.name}
         </Link>
-        <p className="truncate text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           {application.room.property.title}, {application.room.property.city}
         </p>
       </div>

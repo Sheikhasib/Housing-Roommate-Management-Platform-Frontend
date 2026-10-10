@@ -22,8 +22,15 @@ export interface DataTableColumn<T> {
   header: string;
   cell: (row: T) => ReactNode;
   sortable?: boolean;
+  /** Let long free text wrap inside the cell (capped at `max-w-xs`; `className` can override the cap). */
+  wrap?: boolean;
   className?: string;
 }
+
+const WRAP_CLASSES = "max-w-xs whitespace-normal break-words";
+
+const cellClass = <T,>(column: DataTableColumn<T>) =>
+  cn(column.wrap && WRAP_CLASSES, column.className);
 
 export interface DataTableEmpty {
   icon: LucideIcon;
@@ -127,7 +134,7 @@ export function DataTable<T>({
                   ? skeletons.map((index) => (
                       <TableRow key={index} aria-hidden="true">
                         {columns.map((column) => (
-                          <TableCell key={column.key} className={column.className}>
+                          <TableCell key={column.key} className={cellClass(column)}>
                             <Skeleton className="h-4 w-full max-w-40" />
                           </TableCell>
                         ))}
@@ -141,7 +148,7 @@ export function DataTable<T>({
                   : rows.map((row) => (
                       <TableRow key={getRowId(row)} className="hover:bg-muted/50">
                         {columns.map((column) => (
-                          <TableCell key={column.key} className={column.className}>
+                          <TableCell key={column.key} className={cellClass(column)}>
                             {column.cell(row)}
                           </TableCell>
                         ))}
@@ -171,7 +178,9 @@ export function DataTable<T>({
                         <span className="shrink-0 text-xs font-medium tracking-wide text-muted-foreground uppercase">
                           {column.header}
                         </span>
-                        <div className="min-w-0 text-right text-sm">{column.cell(row)}</div>
+                        <div className={cn("min-w-0 text-right text-sm", column.wrap && "break-words")}>
+                          {column.cell(row)}
+                        </div>
                       </div>
                     ))}
                     {actions ? <div className="flex justify-end">{actions(row)}</div> : null}
